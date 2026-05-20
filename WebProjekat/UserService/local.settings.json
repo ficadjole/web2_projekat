@@ -1,0 +1,16 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "SqlConnectionString": "Server=localhost,1444;Database=UsersDB;User Id=sa;Password=LozinkaJakaWebProjekatSifra!#;TrustServerCertificate=True;",
+    "JwtOptions:SecretKey": "VeomaDobroSkriveniNasKljucJeOvoNajaciikadanasvetucelom",
+    "JwtOptions:Issuer": "cloud10.com",
+    "JwtOptions:Audience": "cloud10.com",
+    "JwtOptions:ExpirationMinutes": "60"
+  },
+  "JwtOptions": {
+    "SecretKey": "MojVEOMATAJNIKLJUCKOJIJETAJAN1234%%%#$@",
+    "Issuer": "ProjekatWeb",
+    "Audience": "ProjekatWeb",
+    "ExpirationMinutes": 60
+  }
+}
