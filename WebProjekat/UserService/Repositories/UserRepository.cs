@@ -45,9 +45,9 @@ namespace UserService.Repositories
             return Task.FromResult(user);
         }
 
-        public Task<User> GetByIdAsync(Guid userId)
+        public Task<User> GetByIdAsync(Guid id)
         {
-            var user = _dbContext.Users.Find(userId);
+            var user = _dbContext.Users.Find(id);
 
             if (user == null) {
             

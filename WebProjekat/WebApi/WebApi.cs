@@ -5,6 +5,7 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using Microsoft.ServiceFabric.Data;
 using FluentValidation;
 using WebApi.FluentValidations;
+using WebApi.Services;
 
 namespace WebApi
 {
@@ -42,8 +43,24 @@ namespace WebApi
                         builder.Services.AddEndpointsApiExplorer();
                         builder.Services.AddSwaggerGen();
 
-                       builder.Services.AddValidatorsFromAssemblyContaining<AuthRequestValidator>();
+                       
+                        builder.Services.AddValidatorsFromAssemblyContaining<AuthRequestValidator>();
                         builder.Services.AddValidatorsFromAssemblyContaining<RegistrationRequestValidator>();
+
+                        builder.Services.AddValidatorsFromAssemblyContaining<CreateTripRequestValidator>();
+                        builder.Services.AddValidatorsFromAssemblyContaining<UpdateTripRequestValidator>();
+
+                        builder.Services.AddValidatorsFromAssemblyContaining<CreateDestinationRequestValidator>();
+                        builder.Services.AddValidatorsFromAssemblyContaining<UpdateDestinationRequestValidator>();
+
+                        builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityRequestValidator>();
+                        builder.Services.AddValidatorsFromAssemblyContaining<UpdateActivityRequestValidator>();
+
+                        builder.Services.AddValidatorsFromAssemblyContaining<CreateExpenseRequestValidator>();
+                        builder.Services.AddValidatorsFromAssemblyContaining<UpdateExpenseRequestValidator>();
+
+
+                        builder.Services.AddSingleton<TripServiceProxy>();
 
                         var app = builder.Build();
                         if (app.Environment.IsDevelopment())
