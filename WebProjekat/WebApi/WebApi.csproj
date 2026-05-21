@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
     <PackageReference Include="Microsoft.ServiceFabric.AspNetCore.Kestrel" Version="8.4.268" />
     <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="8.4.268" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />

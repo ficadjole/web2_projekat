@@ -5,7 +5,7 @@ namespace WebApi.Services
 {
     public class TripServiceProxy
     {
-        private readonly Uri _serviceUri = new Uri("fabric:/ProjekatWeb/TripMicroservice");
+        private readonly Uri _serviceUri = new Uri("fabric:/WebProjekat/TripService");
 
         public ITripService GetTripProxy()
             => ServiceProxy.Create<ITripService>(_serviceUri);

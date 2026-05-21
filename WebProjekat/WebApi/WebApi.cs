@@ -6,6 +6,7 @@ using Microsoft.ServiceFabric.Data;
 using FluentValidation;
 using WebApi.FluentValidations;
 using WebApi.Services;
+using WebApi.Extensions;
 
 namespace WebApi
 {
@@ -42,8 +43,8 @@ namespace WebApi
                         builder.Services.AddControllers();
                         builder.Services.AddEndpointsApiExplorer();
                         builder.Services.AddSwaggerGen();
+                        builder.Services.AddJwtAuthentification(builder.Configuration);
 
-                       
                         builder.Services.AddValidatorsFromAssemblyContaining<AuthRequestValidator>();
                         builder.Services.AddValidatorsFromAssemblyContaining<RegistrationRequestValidator>();
 

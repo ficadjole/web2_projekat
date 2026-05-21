@@ -1,4 +1,6 @@
+using Common.Interfaces;
 using Common.Options;
+using Common.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
@@ -48,7 +50,7 @@ namespace UserService
                 options.ExpirationMinutes = expirationMinutes;
             });
 
-            services.AddScoped<IJwtService, JwtGeneratorService>();
+            services.AddScoped<IJwtService, JwtService>();
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
 

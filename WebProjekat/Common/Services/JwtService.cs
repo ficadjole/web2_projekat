@@ -1,19 +1,19 @@
-﻿using Common.Options;
+﻿using Common.Interfaces;
+using Common.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using UserService.Interfaces;
 using WebProjekat.Common;
 
-namespace UserService.Services
+namespace Common.Services
 {
-    public class JwtGeneratorService : IJwtService
+    public class JwtService : IJwtService
     {
         private readonly JwtOptions _options;
 
-        public JwtGeneratorService(IOptions<JwtOptions> options)
+        public JwtService(IOptions<JwtOptions> options)
         {
             _options = options.Value;
         }

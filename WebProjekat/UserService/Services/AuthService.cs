@@ -1,4 +1,5 @@
 ﻿using Common.Enums;
+using Common.Interfaces;
 using Microsoft.Extensions.Logging;
 using UserService.DTOs;
 using UserService.Interfaces;

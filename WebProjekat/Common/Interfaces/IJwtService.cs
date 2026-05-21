@@ -1,6 +1,6 @@
 ﻿using WebProjekat.Common;
 
-namespace UserService.Interfaces
+namespace Common.Interfaces
 {
     public interface IJwtService
     {
