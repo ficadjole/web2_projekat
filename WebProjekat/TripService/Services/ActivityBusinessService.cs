@@ -25,6 +25,7 @@ namespace TripService.Services
         public async Task<Result<ActivityDto>> CreateAsync(CreateActivityDto dto, Guid userId)
         {
             var destination = await _destinationRepository.GetByIdAsync(dto.DestinationId);
+
             if (destination is null)
                 return Result<ActivityDto>.Failure("Destination not found.", ErrorType.NotFound);
 
@@ -46,6 +47,7 @@ namespace TripService.Services
                 return Result<ActivityDto>.Failure("Cannot create activity", ErrorType.Unexpected);
 
             await _activityRepository.AddAsync(activity.Value);
+
             return Result<ActivityDto>.Success(MapActivityToDto.MapToDto(activity.Value));
         }
 

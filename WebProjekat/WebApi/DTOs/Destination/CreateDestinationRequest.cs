@@ -4,7 +4,7 @@ namespace WebApi.DTOs.Destination
 {
     public class CreateDestinationRequest
     {
-        [FromForm(Name= "name")]
+        [FromForm(Name = "name")]
         public string Name { get; set; } = string.Empty;
         [FromForm(Name = "description")]
         public string Description { get; set; } = string.Empty;

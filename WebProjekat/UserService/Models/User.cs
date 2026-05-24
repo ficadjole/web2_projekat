@@ -18,7 +18,7 @@ namespace UserService.Models
 
         public UserRoles Role { get; set; } = UserRoles.User;
 
-        public User(string name, string email, string password, UserRoles role,Guid id = new Guid())
+        public User(string name, string email, string password, UserRoles role, Guid id = new Guid())
         {
             Id = id;
             Name = name;
@@ -46,7 +46,7 @@ namespace UserService.Models
             if (!Enum.IsDefined(typeof(UserRoles), role))
                 return Result<User>.Failure("Invalid user role.", ErrorType.Validation);
 
-            var user = new User(name, email, password, role,new Guid());
+            var user = new User(name, email, password, role, new Guid());
 
             return Result<User>.Success(user);
         }

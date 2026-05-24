@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.ServiceFabric.Services.Remoting.Client;
-using UserService.Interfaces;
 using WebApi.DTOs;
+using WebApi.Services;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IValidator<AuthRequest> validatorAuth, IValidator<RegistrationRequest> validatorRegistration) : ControllerBase
+    public class AuthController(IValidator<AuthRequest> validatorAuth, IValidator<RegistrationRequest> validatorRegistration, UserServiceProxy userServiceProxy) : ControllerBase
     {
 
 
@@ -26,26 +25,15 @@ namespace WebApi.Controllers
 
             }
 
-            var proxy = ServiceProxy.Create<IUserService>(new Uri("fabric:/WebProjekat/UserService"));
+            var loginResult = userServiceProxy.GetUserProxy().LoginAsync(request.Email, request.Password).GetAwaiter().GetResult();
 
-            try
+            if (!loginResult.IsSuccess)
             {
-
-                var loginResult = proxy.LoginAsync(request.Email, request.Password).GetAwaiter().GetResult();
-
-                if (!loginResult.IsSuccess)
-                {
-                    return BadRequest(new { Message = "Login failed", Errors = loginResult.Error!.Message });
-                }
-
-                return Ok(new {loginResult.Value });
-
+                return BadRequest(new { Message = "Login failed", Errors = loginResult.Error!.Message });
             }
-            catch (Exception ex) { 
-            
-                return BadRequest(ex.Message);
 
-            }
+            return Ok(new { loginResult.Value });
+
         }
 
         [HttpPost]
@@ -59,23 +47,15 @@ namespace WebApi.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-            var proxy = ServiceProxy.Create<IUserService>(new Uri("fabric:/WebProjekat/UserService"));
 
-            try
+            var registrationResult = userServiceProxy.GetUserProxy().RegisterAsync(request.Name, request.Email, request.Password, request.Role).GetAwaiter().GetResult();
+
+            if (!registrationResult.IsSuccess)
             {
-
-                var registrationResult = proxy.RegisterAsync(request.Name, request.Email, request.Password, request.Role).GetAwaiter().GetResult();
-
-                if (!registrationResult.IsSuccess)
-                {
-                    return BadRequest(new { Message = "Registration failed", Errors = registrationResult.Error!.Message });
-                }
-
-                return Ok(new { registrationResult.Value });
+                return BadRequest(new { Message = "Registration failed", Errors = registrationResult.Error!.Message });
             }
-            catch (Exception ex) {
-                return BadRequest(ex.Message);
-            }
+
+            return Ok(new { registrationResult.Value });
         }
     }
 }

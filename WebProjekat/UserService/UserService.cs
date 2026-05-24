@@ -19,11 +19,12 @@ namespace UserService
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.
     /// </summary>
-    internal sealed class UserService : StatelessService,  IUserService
+    internal sealed class UserService : StatelessService, IUserService
     {
 
         private readonly ServiceProvider _serviceProvider;
         private readonly IAuthService _authService;
+        private readonly IUserBusinessService userBusinessService;
 
         public UserService(StatelessServiceContext context)
             : base(context)
@@ -58,23 +59,38 @@ namespace UserService
 
             services.AddScoped<IAuthService, AuthService>();
 
+            services.AddScoped<IUserBusinessService, UserBusinessService>();
+
             services.AddLogging();
 
-            services.AddDbContext<UsersDbContext>(options=>options.UseSqlServer(sqlConn));
+            services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(sqlConn));
 
             _serviceProvider = services.BuildServiceProvider();
-           
+
             _authService = _serviceProvider.GetRequiredService<IAuthService>();
+
+            userBusinessService = _serviceProvider.GetRequiredService<IUserBusinessService>();
+        }
+
+        public Task<Result> DeleteUserAsync(string id)
+        {
+
+            return userBusinessService.DeleteUser(Guid.Parse(id));
+        }
+
+        public Task<Result<IEnumerable<UserDto>>> GetUsersAsync()
+        {
+            return userBusinessService.GetAllUsers();
         }
 
         public Task<Result<AuthResponseDto>> LoginAsync(string username, string password)
         {
-           return _authService.AuthenticateAsync(username, password);
+            return _authService.AuthenticateAsync(username, password);
         }
 
-        public Task<Result<AuthResponseDto>> RegisterAsync(string name, string email, string password,string role)
+        public Task<Result<AuthResponseDto>> RegisterAsync(string name, string email, string password, string role)
         {
-           return _authService.RegisterAsync(name, email, password,role);
+            return _authService.RegisterAsync(name, email, password, role);
         }
 
         /// <summary>

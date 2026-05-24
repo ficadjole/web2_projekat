@@ -1,12 +1,11 @@
-using System.Fabric;
+using FluentValidation;
 using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
-using Microsoft.ServiceFabric.Data;
-using FluentValidation;
+using System.Fabric;
+using WebApi.Extensions;
 using WebApi.FluentValidations;
 using WebApi.Services;
-using WebApi.Extensions;
 
 namespace WebApi
 {
@@ -62,6 +61,7 @@ namespace WebApi
 
 
                         builder.Services.AddSingleton<TripServiceProxy>();
+                        builder.Services.AddSingleton<UserServiceProxy>();
 
                         var app = builder.Build();
                         if (app.Environment.IsDevelopment())
@@ -71,7 +71,7 @@ namespace WebApi
                         }
                         app.UseAuthorization();
                         app.MapControllers();
-                        
+
                         return app;
 
                     }))

@@ -8,11 +8,11 @@ namespace TripService.Interfaces.DTOs.Destination
     {
         [DataMember]
         public string Name { get; set; } = string.Empty;
-        [DataMember] 
+        [DataMember]
         public string Description { get; set; } = string.Empty;
-        [DataMember] 
+        [DataMember]
         public string Notes { get; set; } = string.Empty;
-        [DataMember] 
+        [DataMember]
         public string Location { get; set; } = string.Empty;
         [DataMember]
         public DateTime ArrivingDate { get; set; }

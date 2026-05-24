@@ -10,5 +10,9 @@ namespace UserService.Interfaces
 
         Task<Result<AuthResponseDto>> RegisterAsync(string name, string email, string password, string role);
 
+        Task<Result<IEnumerable<UserDto>>> GetUsersAsync();
+
+        Task<Result> DeleteUserAsync(string id);
+
     }
 }

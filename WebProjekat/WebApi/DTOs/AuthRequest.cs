@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebProjekat.Common;
 
 namespace WebApi.DTOs
 {

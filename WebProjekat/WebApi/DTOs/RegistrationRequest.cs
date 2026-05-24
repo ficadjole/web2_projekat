@@ -14,6 +14,6 @@ namespace WebApi.DTOs
         public string Password { get; set; } = string.Empty;
 
         [FromForm(Name = "role")]
-        public string Role {  get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
     }
 }

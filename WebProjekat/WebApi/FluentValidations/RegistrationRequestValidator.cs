@@ -5,7 +5,8 @@ namespace WebApi.FluentValidations
 {
     public class RegistrationRequestValidator : AbstractValidator<RegistrationRequest>
     {
-        public RegistrationRequestValidator() {
+        public RegistrationRequestValidator()
+        {
 
             RuleFor(x => x.Email)
                  .NotEmpty().WithMessage("Email is required.")

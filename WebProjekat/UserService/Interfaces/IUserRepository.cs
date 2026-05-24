@@ -9,5 +9,7 @@ namespace UserService.Interfaces
 
         Task<User> GetByEmailAsync(string email);
 
+        Task<IEnumerable<User>> GetAll();
+
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.ServiceFabric.Services.Remoting;
-using UserService.DTOs;
+﻿using UserService.DTOs;
 using WebProjekat.Common;
 
 namespace UserService.Interfaces

@@ -9,11 +9,11 @@ namespace WebApi.DTOs.Trip
 
         [FromForm(Name = "description")]
         public string Description { get; set; } = string.Empty;
-        [FromForm(Name= "startDate")]
+        [FromForm(Name = "startDate")]
         public DateTime StartDate { get; set; }
         [FromForm(Name = "endDate")]
         public DateTime EndDate { get; set; }
-        [FromForm(Name="plannedBudget")]
+        [FromForm(Name = "plannedBudget")]
         public decimal PlannedBudget { get; set; }
     }
 }

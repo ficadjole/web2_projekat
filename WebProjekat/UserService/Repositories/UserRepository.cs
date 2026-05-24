@@ -1,4 +1,5 @@
-﻿using UserService.DatabaseContext;
+﻿using Microsoft.EntityFrameworkCore;
+using UserService.DatabaseContext;
 using UserService.Interfaces;
 using UserService.Models;
 
@@ -36,8 +37,9 @@ namespace UserService.Repositories
         {
             var user = _dbContext.Users.FirstOrDefault(u => u.Email == email);
 
-            if (user == null) {
-            
+            if (user == null)
+            {
+
                 return Task.FromResult<User>(null);
 
             }
@@ -45,24 +47,26 @@ namespace UserService.Repositories
             return Task.FromResult(user);
         }
 
-        public Task<User> GetByIdAsync(Guid id)
+        public Task<User?> GetByIdAsync(Guid id)
         {
             var user = _dbContext.Users.Find(id);
 
-            if (user == null) {
-            
-                return Task.FromResult<User>(null);
+            if (user == null)
+            {
+
+                return Task.FromResult<User?>(null);
             }
 
-            return Task.FromResult(user);
+            return Task.FromResult<User?>(user);
         }
 
         public Task<bool> IsEmailRegisteredAsync(string email)
         {
             var isRegistered = _dbContext.Users.Any(u => u.Email == email);
 
-            if (isRegistered) {
-            
+            if (isRegistered)
+            {
+
                 return Task.FromResult(true);
             }
             else
@@ -73,7 +77,7 @@ namespace UserService.Repositories
 
         public Task UpdateAsync(User user)
         {
-           var existingUser = _dbContext.Users.Find(user.Id);
+            var existingUser = _dbContext.Users.Find(user.Id);
             if (existingUser != null)
             {
                 existingUser.Name = user.Name;
@@ -84,5 +88,9 @@ namespace UserService.Repositories
             }
             return Task.CompletedTask;
         }
+
+        public async Task<IEnumerable<User>> GetAll() => await _dbContext.Users.ToListAsync();
+
+
     }
 }

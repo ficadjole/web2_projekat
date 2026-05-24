@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 
 namespace UserService.DTOs
 {
@@ -20,6 +15,6 @@ namespace UserService.DTOs
         public string Email { get; set; } = string.Empty;
 
         [DataMember]
-        public string Role {  get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
     }
 }

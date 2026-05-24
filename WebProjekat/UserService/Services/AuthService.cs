@@ -32,7 +32,7 @@ namespace UserService.Services
                 if (user == null)
                 {
                     _logger.LogWarning("Authentication failed for email: {Email}", email);
-                    return Result<AuthResponseDto>.Failure("Invalid email or password.",ErrorType.Authentication);
+                    return Result<AuthResponseDto>.Failure("Invalid email or password.", ErrorType.Authentication);
                 }
 
                 var isPasswordValid = _passwordHasher.VerifyPassword(password, user.Password);
@@ -43,11 +43,11 @@ namespace UserService.Services
                     return Result<AuthResponseDto>.Failure("Invalid email or password.", ErrorType.Authentication);
                 }
 
-                var token = _jwtService.GenerateToken(user.Id,user.Email,user.Role.ToString());
+                var token = _jwtService.GenerateToken(user.Id, user.Email, user.Role.ToString());
 
                 _logger.LogInformation("User authenticated successfully: {Email}", email);
-                
-                var userDto = new UserDto() { Id = user.Id.ToString(),Name = user.Name, Email = user.Email, Role = user.Role.ToString() };
+
+                var userDto = new UserDto() { Id = user.Id.ToString(), Name = user.Name, Email = user.Email, Role = user.Role.ToString() };
 
                 var authResponseDto = new AuthResponseDto() { Token = token.Value, User = userDto };
 
@@ -56,14 +56,14 @@ namespace UserService.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during authentication for email: {Email}", email);
-                return Result<AuthResponseDto>.Failure("An error occurred during authentication. Please try again later.",ErrorType.Unexpected);
+                return Result<AuthResponseDto>.Failure("An error occurred during authentication. Please try again later.", ErrorType.Unexpected);
             }
         }
 
         public async Task<Result<AuthResponseDto>> RegisterAsync(string name, string email, string password, string role)
         {
 
-            if(!Enum.TryParse<UserRoles>(role, true, out var parsedRole) && parsedRole != UserRoles.User)
+            if (!Enum.TryParse<UserRoles>(role, true, out var parsedRole) && parsedRole != UserRoles.User)
             {
                 return Result<AuthResponseDto>.Failure("Invalid user role specified.", ErrorType.Validation);
             }
@@ -90,7 +90,7 @@ namespace UserService.Services
                 return Result<AuthResponseDto>.Success(authResponseDto);
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during registration for email: {Email}", email);
                 return Result<AuthResponseDto>.Failure("An error occurred during registration. Please try again later.", ErrorType.Unexpected);

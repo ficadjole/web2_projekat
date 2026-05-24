@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TripService.Interfaces.DTOs.Trip;
@@ -11,24 +10,24 @@ namespace WebApi.Controllers.Trip
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TripController(IValidator<CreateTripRequest> createValidator, IValidator<UpdateTripRequest> updateValidator,TripServiceProxy _proxy) : ControllerBase
+    public class TripController(IValidator<CreateTripRequest> createValidator, IValidator<UpdateTripRequest> updateValidator, TripServiceProxy proxy) : ControllerBase
     {
 
         [HttpPost]
         [Authorize]
         [Route("create")]
-        public async Task<IActionResult> Create([FromForm]  CreateTripRequest request)
+        public async Task<IActionResult> Create([FromForm] CreateTripRequest request)
         {
             var validatorResult = await createValidator.ValidateAsync(request);
 
-            if (!validatorResult.IsValid) 
+            if (!validatorResult.IsValid)
                 return BadRequest(validatorResult.Errors);
 
-            var dto = new CreateTripDto { Name = request.Name , Description = request.Description, StartDate = request.StartDate, EndDate = request.EndDate, PlannedBudget = request.PlannedBudget};
+            var dto = new CreateTripDto { Name = request.Name, Description = request.Description, StartDate = request.StartDate, EndDate = request.EndDate, PlannedBudget = request.PlannedBudget };
 
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-            var result = await _proxy.GetTripProxy().CreateTripAsync(dto, userId);
+            var result = await proxy.GetTripProxy().CreateTripAsync(dto, userId);
 
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);
@@ -43,7 +42,7 @@ namespace WebApi.Controllers.Trip
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-            var result = await _proxy.GetTripProxy().GetTripByIdAsync(id, userId);
+            var result = await proxy.GetTripProxy().GetTripByIdAsync(id, userId);
 
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);
@@ -57,7 +56,7 @@ namespace WebApi.Controllers.Trip
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-            var result = await _proxy.GetTripProxy().GetAllTripsByUserAsync(userId);
+            var result = await proxy.GetTripProxy().GetAllTripsByUserAsync(userId);
 
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);
@@ -71,7 +70,7 @@ namespace WebApi.Controllers.Trip
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-            var result = await _proxy.GetTripProxy().GetTripWithDetailsAsync(id, userId);
+            var result = await proxy.GetTripProxy().GetTripWithDetailsAsync(id, userId);
 
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);
@@ -99,7 +98,7 @@ namespace WebApi.Controllers.Trip
 
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-            var result = await _proxy.GetTripProxy().UpdateTripAsync(id, dto, userId);
+            var result = await proxy.GetTripProxy().UpdateTripAsync(id, dto, userId);
 
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);
@@ -113,7 +112,7 @@ namespace WebApi.Controllers.Trip
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
-            var result = await _proxy.GetTripProxy().DeleteTripAsync(id, userId);
+            var result = await proxy.GetTripProxy().DeleteTripAsync(id, userId);
 
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);
