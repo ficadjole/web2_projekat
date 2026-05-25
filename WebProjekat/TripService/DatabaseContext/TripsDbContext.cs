@@ -20,6 +20,8 @@ namespace TripService.DatabaseContext
 
         public DbSet<Expense> Expenses { get; set; }
 
+        public DbSet<TripShare> TripShares { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -88,6 +90,24 @@ namespace TripService.DatabaseContext
                 entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("getutcdate()");
                 entity.Property(e => e.Description).HasMaxLength(500);
                 entity.Property(e => e.TripId).IsRequired();
+            });
+
+            modelBuilder.Entity<TripShare>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasDefaultValueSql("newid()");
+                entity.Property(e => e.Token).IsRequired();
+                entity.Property(e => e.AccessType).IsRequired().HasConversion<string>();
+                entity.Property(e => e.ExpiresAt).IsRequired();
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("getutcdate()");
+                entity.Property(e => e.TripId).IsRequired();
+
+                entity.HasOne(e => e.Trip)
+                      .WithMany()
+                      .HasForeignKey(e => e.TripId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(e => e.Token).IsUnique();
             });
         }
 
