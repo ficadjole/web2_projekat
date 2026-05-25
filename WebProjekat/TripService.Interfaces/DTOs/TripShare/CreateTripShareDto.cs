@@ -1,0 +1,18 @@
+﻿using Common.Enums;
+using System.Runtime.Serialization;
+
+namespace TripService.Interfaces.DTOs.TripShare
+{
+    [DataContract]
+    public class CreateTripShareDto
+    {
+        [DataMember]
+        public Guid TripId { get; set; }
+
+        [DataMember]
+        public ShareAccessType AccessType { get; set; }
+
+        [DataMember]
+        public int ExpiresInDays { get; set; }
+    }
+}

@@ -18,5 +18,8 @@ namespace WebApi.Services
 
         public IExpenseService GetExpenseProxy()
             => ServiceProxy.Create<IExpenseService>(_serviceUri);
+
+        public ITripShareService GetTripShareProxy()
+            => ServiceProxy.Create<ITripShareService>(_serviceUri);
     }
 }

@@ -20,10 +20,10 @@ namespace TripService.Models
 
         protected TripShare() { }
 
-        public Result<TripShare> Create(string tripId, string token, ShareAccessType accessType, DateTime expiresAt, DateTime createdAt)
+        public static Result<TripShare> Create(string tripId, string token, ShareAccessType accessType, DateTime expiresAt, DateTime createdAt)
         {
             if (string.IsNullOrEmpty(token))
-                return Result<TripShare>.Failure("Token cannot be null",ErrorType.Validation);
+                return Result<TripShare>.Failure("Token cannot be null", ErrorType.Validation);
 
             if (!Guid.TryParse(tripId, out Guid guid))
                 return Result<TripShare>.Failure("Id not in right format", ErrorType.Validation);
@@ -37,7 +37,7 @@ namespace TripService.Models
 
         }
 
-        public Result<TripShare> Load(string id, Guid tripId, string token, ShareAccessType accessType, DateTime expiresAt, DateTime createdAt)
+        public static Result<TripShare> Load(string id, Guid tripId, string token, ShareAccessType accessType, DateTime expiresAt, DateTime createdAt)
         {
             if (!Guid.TryParse(id, out Guid guid))
                 return Result<TripShare>.Failure("Id not in right format", ErrorType.Validation);

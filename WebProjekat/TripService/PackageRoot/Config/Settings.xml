@@ -3,4 +3,7 @@
 	<Section Name="SqlConfig">
 		<Parameter Name="SqlConnectionString" Value="Server=localhost,1444;Database=TripsDB;User Id=sa;Password='LozinkaJakaWebProjekatSifra!#';TrustServerCertificate=True;" />
 	</Section>
+	<Section Name="BaseAppSettings">
+		<Parameter Name="BaseUrl" Value="https://localhost:5000"/>
+	</Section>
 </Settings>

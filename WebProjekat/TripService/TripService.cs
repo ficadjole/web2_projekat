@@ -11,6 +11,7 @@ using TripService.Interfaces.DTOs.Activity;
 using TripService.Interfaces.DTOs.Destination;
 using TripService.Interfaces.DTOs.Expense;
 using TripService.Interfaces.DTOs.Trip;
+using TripService.Interfaces.DTOs.TripShare;
 using TripService.Repositories;
 using TripService.Services;
 using WebProjekat.Common;
@@ -20,13 +21,14 @@ namespace TripService
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.
     /// </summary>
-    internal sealed class TripService : StatelessService, ITripService, IDestinationService, IActivityService, IExpenseService
+    internal sealed class TripService : StatelessService, ITripService, IDestinationService, IActivityService, IExpenseService, ITripShareService
     {
         private readonly ServiceProvider _serviceProvider;
         private readonly ITripBusinessService _tripService;
         private readonly IDestinationBusinessService _destinationService;
         private readonly IActivityBusinessService _activityService;
         private readonly IExpenseBusinessService _expenseService;
+        private readonly ITripShareBusinessService _tripShareService;
 
         public TripService(StatelessServiceContext context)
             : base(context)
@@ -42,15 +44,19 @@ namespace TripService
 
             services.AddDbContext<TripsDbContext>(options => options.UseSqlServer(sqlConn));
 
+            services.AddSingleton(context);
+
             services.AddScoped<ITripRepository, TripRepository>();
             services.AddScoped<IDestinationRepository, DestinationRepository>();
             services.AddScoped<IActivityRepository, ActivityRepository>();
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            services.AddScoped<ITripShareRepository, TripShareRepository>();
 
             services.AddScoped<ITripBusinessService, TripBusinessService>();
             services.AddScoped<IDestinationBusinessService, DestinationBusinessService>();
             services.AddScoped<IActivityBusinessService, ActivityBusinessService>();
             services.AddScoped<IExpenseBusinessService, ExpenseBusinessService>();
+            services.AddScoped<ITripShareBusinessService, TripShareBusinessService>();
 
             _serviceProvider = services.BuildServiceProvider();
 
@@ -58,6 +64,7 @@ namespace TripService
             _destinationService = _serviceProvider.GetRequiredService<IDestinationBusinessService>();
             _activityService = _serviceProvider.GetRequiredService<IActivityBusinessService>();
             _expenseService = _serviceProvider.GetRequiredService<IExpenseBusinessService>();
+            _tripShareService = _serviceProvider.GetRequiredService<ITripShareBusinessService>();
         }
 
         /// <summary>
@@ -172,5 +179,21 @@ namespace TripService
         public Task<Result> DeleteExpenseAsync(Guid id, Guid userId)
             => _expenseService.DeleteAsync(id, userId);
         #endregion Expense
+
+        #region TripShare
+
+        public Task<Result<TripShareDto>> CreateShareAsync(CreateTripShareDto dto, Guid userId)
+            => _tripShareService.CreateShareAsync(dto, userId);
+
+        public Task<Result<SharedTripDto>> GetSharedTripAsync(string token)
+            => _tripShareService.GetSharedTripAsync(token);
+
+        public Task<Result<IEnumerable<TripShareDto>>> GetSharesByTripIdAsync(Guid tripId, Guid userId)
+            => _tripShareService.GetSharesByTripIdAsync(tripId, userId);
+
+        public Task<Result> RevokeShareAsync(Guid id, Guid userId)
+            => _tripShareService.RevokeShareAsync(id, userId);
+
+        #endregion TripShare
     }
 }
