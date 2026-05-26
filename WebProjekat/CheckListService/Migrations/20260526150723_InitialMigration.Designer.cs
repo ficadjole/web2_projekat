@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CheckListService.Migrations
 {
     [DbContext(typeof(CheckListsDbContext))]
-    [Migration("20260526122540_InitialMigration")]
+    [Migration("20260526150723_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -40,7 +40,7 @@ namespace CheckListService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Checklist");
+                    b.ToTable("Checklists");
                 });
 
             modelBuilder.Entity("CheckListService.Models.ChecklistItem", b =>

@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TripService.Interfaces", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckListService", "CheckListService\CheckListService.csproj", "{1AC60521-09B7-48FE-AC6A-EFF8F9950CE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckListService.Interfaces", "CheckListService.Interfaces\CheckListService.Interfaces.csproj", "{3C0A1F23-4246-4633-8811-65FA095CDAA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,14 @@ Global
 		{1AC60521-09B7-48FE-AC6A-EFF8F9950CE9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1AC60521-09B7-48FE-AC6A-EFF8F9950CE9}.Release|x64.ActiveCfg = Release|Any CPU
 		{1AC60521-09B7-48FE-AC6A-EFF8F9950CE9}.Release|x64.Build.0 = Release|Any CPU
+		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Debug|x64.Build.0 = Debug|Any CPU
+		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Release|x64.ActiveCfg = Release|Any CPU
+		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

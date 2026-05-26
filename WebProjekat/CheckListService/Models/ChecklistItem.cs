@@ -1,9 +1,4 @@
 ﻿using Common.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebProjekat.Common;
 
 namespace CheckListService.Models
@@ -30,15 +25,18 @@ namespace CheckListService.Models
             ChecklistId = checklistId;
         }
 
-        public static Result<ChecklistItem> Create(string name, bool isChecked, string checklistId) { 
-        
-            if(!Guid.TryParse(checklistId, out Guid id))
-                return Result<ChecklistItem>.Failure("Invalid checklist id",ErrorType.Validation);
+        public static Result<ChecklistItem> Create(string id,string name, bool isChecked, string checklistId)
+        {
+            if(!Guid.TryParse(id, out Guid Id))
+                return Result<ChecklistItem>.Failure("Invalid checklist item id", ErrorType.Validation);
 
-            var checklistItem = new ChecklistItem(new Guid(), name, isChecked, id);
+            if (!Guid.TryParse(checklistId, out Guid checklistid))
+                return Result<ChecklistItem>.Failure("Invalid checklist id", ErrorType.Validation);
+
+            var checklistItem = new ChecklistItem(Id, name, isChecked, checklistid);
 
             return Result<ChecklistItem>.Success(checklistItem);
-        
+
         }
 
         public static Result<ChecklistItem> Load(string id, string name, bool isChecked, Guid checklistId)
@@ -46,10 +44,10 @@ namespace CheckListService.Models
             if (!Guid.TryParse(id, out Guid Id))
                 return Result<ChecklistItem>.Failure("Invalid checklist item id", ErrorType.Validation);
 
-            var checklistItem = new ChecklistItem(Id,name,isChecked,checklistId); 
-            
+            var checklistItem = new ChecklistItem(Id, name, isChecked, checklistId);
+
             return Result<ChecklistItem>.Success(checklistItem);
         }
-    } 
-    
+    }
+
 }

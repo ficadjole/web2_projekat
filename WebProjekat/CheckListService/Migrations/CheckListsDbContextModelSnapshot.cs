@@ -37,7 +37,7 @@ namespace CheckListService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Checklist");
+                    b.ToTable("Checklists");
                 });
 
             modelBuilder.Entity("CheckListService.Models.ChecklistItem", b =>

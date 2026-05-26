@@ -10,6 +10,9 @@ namespace CheckListService.DatabaseContext
 
         public CheckListsDbContext() { }
 
+        public DbSet<Checklist> Checklists { get; set; }
+
+        public DbSet<ChecklistItem> ChecklistItem { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

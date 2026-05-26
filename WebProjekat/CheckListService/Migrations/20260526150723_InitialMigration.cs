@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -12,7 +11,7 @@ namespace CheckListService.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Checklist",
+                name: "Checklists",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newid()"),
@@ -21,7 +20,7 @@ namespace CheckListService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Checklist", x => x.Id);
+                    table.PrimaryKey("PK_Checklists", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -37,9 +36,9 @@ namespace CheckListService.Migrations
                 {
                     table.PrimaryKey("PK_ChecklistItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ChecklistItem_Checklist_ChecklistId",
+                        name: "FK_ChecklistItem_Checklists_ChecklistId",
                         column: x => x.ChecklistId,
-                        principalTable: "Checklist",
+                        principalTable: "Checklists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -57,7 +56,7 @@ namespace CheckListService.Migrations
                 name: "ChecklistItem");
 
             migrationBuilder.DropTable(
-                name: "Checklist");
+                name: "Checklists");
         }
     }
 }
