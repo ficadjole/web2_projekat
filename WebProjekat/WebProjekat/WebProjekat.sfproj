@@ -36,6 +36,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CheckListService\CheckListService.csproj" />
     <ProjectReference Include="..\TripService\TripService.csproj" />
     <ProjectReference Include="..\UserService\UserService.csproj" />
     <ProjectReference Include="..\WebApi\WebApi.csproj">

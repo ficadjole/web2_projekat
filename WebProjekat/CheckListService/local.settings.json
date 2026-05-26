@@ -1,0 +1,6 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "SqlConnectionString": "Server=localhost,1444;Database=CheckListsDB;User Id=sa;Password=LozinkaJakaWebProjekatSifra!#;TrustServerCertificate=True;"
+  }
+}
