@@ -59,9 +59,11 @@ namespace WebApi
                         builder.Services.AddValidatorsFromAssemblyContaining<CreateExpenseRequestValidator>();
                         builder.Services.AddValidatorsFromAssemblyContaining<UpdateExpenseRequestValidator>();
 
+                        builder.Services.AddValidatorsFromAssemblyContaining<AddChecklistItemRequestValidator>();
 
                         builder.Services.AddSingleton<TripServiceProxy>();
                         builder.Services.AddSingleton<UserServiceProxy>();
+                        builder.Services.AddSingleton<ChecklistServiceProxy>();
 
                         var app = builder.Build();
                         if (app.Environment.IsDevelopment())

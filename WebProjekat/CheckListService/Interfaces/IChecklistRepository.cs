@@ -8,6 +8,6 @@ namespace CheckListService.Interfaces
         Task<Checklist?> GetByIdAsync(Guid id);
         Task<Checklist?> GetByTripIdAsync(Guid tripId);
         Task<Checklist> CreateChecklistAsync(Checklist checklist);
-        Task DeleteChecklistAsync(Guid checklistId);
+        Task DeleteChecklistAsync(Guid tripId);
     }
 }

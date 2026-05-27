@@ -22,7 +22,7 @@ namespace CheckListService.Models
             UserId = userId;
         }
 
-        public static Result<Checklist> Create(string tripId, string userId)
+        public static Result<Checklist> Create(string id, string tripId, string userId)
         {
 
             if (!Guid.TryParse(tripId, out Guid tripid))
@@ -31,7 +31,10 @@ namespace CheckListService.Models
             if (!Guid.TryParse(userId, out Guid userid))
                 return Result<Checklist>.Failure("Invalid user id", ErrorType.Validation);
 
-            var list = new Checklist(new Guid(), tripid, userid);
+            if (!Guid.TryParse(id, out Guid Id))
+                return Result<Checklist>.Failure("Invalid checklist id", ErrorType.Validation);
+
+            var list = new Checklist(Id, tripid, userid);
 
             return Result<Checklist>.Success(list);
 

@@ -25,9 +25,9 @@ namespace CheckListService.Models
             ChecklistId = checklistId;
         }
 
-        public static Result<ChecklistItem> Create(string id,string name, bool isChecked, string checklistId)
+        public static Result<ChecklistItem> Create(string id, string name, bool isChecked, string checklistId)
         {
-            if(!Guid.TryParse(id, out Guid Id))
+            if (!Guid.TryParse(id, out Guid Id))
                 return Result<ChecklistItem>.Failure("Invalid checklist item id", ErrorType.Validation);
 
             if (!Guid.TryParse(checklistId, out Guid checklistid))

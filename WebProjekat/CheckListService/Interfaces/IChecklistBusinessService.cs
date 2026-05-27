@@ -9,7 +9,7 @@ namespace CheckListService.Interfaces
 
         Task<IEnumerable<ChecklistDto>> GetAllAsync();
         Task<Result<ChecklistDto>> GetByTripIdAsync(Guid tripId, Guid userId);
-        Task<Result<ChecklistItemDto>> AddItemAsync(Guid itemId,CreateChecklistItemDto dto, Guid userId);
+        Task<Result<ChecklistItemDto>> AddItemAsync(Guid itemId, CreateChecklistItemDto dto, ChecklistDto checklistDto, Guid userId);
         Task<Result<ChecklistItemDto>> ToggleItemAsync(Guid itemId, Guid userId);
         Task<Result> DeleteItemAsync(Guid itemId, Guid userId);
         Task<Result> DeleteChecklistAsync(Guid checklistId, Guid userId);

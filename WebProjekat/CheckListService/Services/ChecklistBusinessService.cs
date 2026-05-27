@@ -19,13 +19,13 @@ namespace CheckListService.Services
             _listItemRepository = listItemRepository;
         }
 
-        public async Task<Result<ChecklistItemDto>> AddItemAsync(Guid itemId, CreateChecklistItemDto dto, Guid userId)
+        public async Task<Result<ChecklistItemDto>> AddItemAsync(Guid itemId, CreateChecklistItemDto dto, ChecklistDto checklistDto, Guid userId)
         {
             var checklist = await _checklistRepository.GetByTripIdAsync(dto.TripId);
 
             if (checklist is null)
             {
-                var checklistResult = Checklist.Create(dto.TripId.ToString(), userId.ToString());
+                var checklistResult = Checklist.Create(checklistDto.Id.ToString(), checklistDto.TripId.ToString(), userId.ToString());
 
                 if (checklistResult.IsFailure)
                     return Result<ChecklistItemDto>.Failure(checklistResult.Error!.Message);
@@ -41,7 +41,7 @@ namespace CheckListService.Services
             if (string.IsNullOrWhiteSpace(dto.Name))
                 return Result<ChecklistItemDto>.Failure("Item name is required.", ErrorType.Validation);
 
-            var itemResult = ChecklistItem.Create(itemId.ToString(),dto.Name, false, checklist.Id.ToString());
+            var itemResult = ChecklistItem.Create(itemId.ToString(), dto.Name, false, checklist.Id.ToString());
 
             if (itemResult.IsFailure)
                 return Result<ChecklistItemDto>.Failure(itemResult.Error!.Message);
@@ -59,9 +59,9 @@ namespace CheckListService.Services
             return Result<ChecklistItemDto>.Success(listItemDto);
         }
 
-        public async Task<Result> DeleteChecklistAsync(Guid checklistId, Guid userId)
+        public async Task<Result> DeleteChecklistAsync(Guid tripId, Guid userId)
         {
-            var checklist = await _checklistRepository.GetByIdAsync(checklistId);
+            var checklist = await _checklistRepository.GetByTripIdAsync(tripId);
 
             if (checklist is null)
                 return Result.Failure("Checklist not found.", ErrorType.NotFound);
@@ -69,7 +69,7 @@ namespace CheckListService.Services
             if (checklist.UserId != userId)
                 return Result.Failure("Unauthorized.", ErrorType.Unauthorized);
 
-            await _checklistRepository.DeleteChecklistAsync(checklistId);
+            await _checklistRepository.DeleteChecklistAsync(tripId);
 
             return Result.Success();
         }

@@ -8,8 +8,9 @@ namespace CheckListService.Interfaces
     {
         Task<Result<ChecklistDto>> GetByTripIdAsync(Guid tripId, Guid userId);
         Task<Result<ChecklistItemDto>> AddItemAsync(CreateChecklistItemDto dto, Guid userId);
-        Task<Result<ChecklistItemDto>> ToggleItemAsync(Guid itemId, Guid userId);
-        Task<Result> DeleteChecklistAsync(Guid checklistId, Guid userId);
+        Task<Result<ChecklistItemDto>> ToggleItemAsync(Guid tripId,Guid itemId, Guid userId);
+        Task<Result> DeleteChecklistAsync(Guid tripId, Guid userId);
+        Task<Result> DeleteItemAsync(Guid tripId, Guid itemId, Guid userId);
 
     }
 }

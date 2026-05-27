@@ -8,14 +8,14 @@ using CheckListService.Repositories;
 using CheckListService.Services;
 using Common.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.ServiceFabric.Data.Collections;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Remoting.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using System.Fabric;
-using System.Runtime.InteropServices;
+using System.Text.Json;
 using WebProjekat.Common;
 
 namespace CheckListService
@@ -27,9 +27,12 @@ namespace CheckListService
     {
         private readonly IChecklistBusinessService checklistService;
         private readonly ServiceProvider serviceProvider;
+
         //kljuc mi je tripId, radi lakse pretrage 
         private IReliableDictionary<Guid, ChecklistDto> checklistDictionary;
         private IReliableQueue<QueueItem> sqlQueue;
+
+        private ILogger<CheckListService> logger;
 
 
         public CheckListService(StatefulServiceContext context)
@@ -51,10 +54,13 @@ namespace CheckListService
 
             services.AddScoped<IChecklistBusinessService, ChecklistBusinessService>();
 
+            services.AddLogging();
+
             serviceProvider = services.BuildServiceProvider();
 
             checklistService = serviceProvider.GetRequiredService<IChecklistBusinessService>();
 
+            logger = serviceProvider.GetRequiredService<ILogger<CheckListService>>();
         }
 
         public async Task<Result<ChecklistItemDto>> AddItemAsync(CreateChecklistItemDto dto, Guid userId)
@@ -63,18 +69,20 @@ namespace CheckListService
             {
 
 
-                if (!(await checklistDictionary.ContainsKeyAsync(tx,dto.TripId)))
+                if (!(await checklistDictionary.ContainsKeyAsync(tx, dto.TripId)))
                 {
 
-                    Checklist checklist = Checklist.Create(dto.TripId.ToString(), userId.ToString()).Value;
+                    Checklist checklist = Checklist.Create(Guid.NewGuid().ToString(), dto.TripId.ToString(), userId.ToString()).Value;
 
                     await checklistDictionary.AddAsync(tx, dto.TripId, MapChecklistToDto.MapToDto(checklist));
 
                 }
 
-                var listDto = checklistDictionary.TryGetValueAsync(tx, dto.TripId).GetAwaiter().GetResult().Value;
+                var result = await checklistDictionary.TryGetValueAsync(tx, dto.TripId);
 
-                var newItemId = new Guid();
+                var listDto = result.Value;
+
+                var newItemId = Guid.NewGuid();
 
                 var newItem = ChecklistItem.Create(newItemId.ToString(), dto.Name, false, listDto.Id.ToString());
 
@@ -84,8 +92,10 @@ namespace CheckListService
 
                 await checklistDictionary.SetAsync(tx, dto.TripId, listDto);
 
-                await sqlQueue.EnqueueAsync(tx, new QueueItem { itemId = newItemId, userId = userId, OperationType = OperationTypes.Create, createDto = dto });
-                
+                var createItemDto = new CreateItemQueueDTO { itemId = newItemId, createDto = dto, checklistDto = listDto };
+
+                await sqlQueue.EnqueueAsync(tx, new QueueItem { userId = userId, OperationType = OperationTypes.Create, Payload = JsonSerializer.Serialize(createItemDto) });
+
 
                 await tx.CommitAsync();
 
@@ -93,24 +103,84 @@ namespace CheckListService
 
             }
 
-           
+
         }
 
-        public Task<Result> DeleteChecklistAsync(Guid checklistId, Guid userId)
+        public async Task<Result> DeleteChecklistAsync(Guid tripId, Guid userId)
         {
-            throw new NotImplementedException();
+            using (var tx = StateManager.CreateTransaction())
+            {
+
+                var result = checklistDictionary.TryGetValueAsync(tx, tripId);
+
+                if (result.Result.HasValue && result.Result.Value.UserId == userId)
+                {
+
+                    await checklistDictionary.TryRemoveAsync(tx, tripId);
+
+                    await sqlQueue.EnqueueAsync(tx, new QueueItem { userId = userId, OperationType = OperationTypes.Delete, Payload = JsonSerializer.Serialize(tripId) });
+
+                    await tx.CommitAsync();
+
+                    return Result.Success();
+                }
+                else
+                {
+                    return Result.Failure("Checklist not found", ErrorType.NotFound);
+                }
+            }
+        }
+
+        public async Task<Result> DeleteItemAsync(Guid tripId, Guid itemId, Guid userId)
+        {
+            using (var tx = StateManager.CreateTransaction())
+            {
+
+                var result = checklistDictionary.TryGetValueAsync(tx, tripId);
+
+                if (result.Result.HasValue && result.Result.Value.UserId == userId)
+                {
+                    var checklist = result.Result.Value;
+
+                    var item = checklist.Items.FirstOrDefault(i => i.Id == itemId);
+
+                    if (item != null)
+                    {
+                        checklist.Items.Remove(item);
+
+                        await checklistDictionary.SetAsync(tx, tripId, checklist);
+
+                        await sqlQueue.EnqueueAsync(tx, new QueueItem { userId = userId, OperationType = OperationTypes.DeleteItem, Payload = JsonSerializer.Serialize(itemId) });
+
+                        await tx.CommitAsync();
+
+                        return Result.Success();
+                    }
+                    else
+                    {
+                        return Result.Failure("Item not found", ErrorType.NotFound);
+                    }
+                }
+                else
+                {
+                    return Result.Failure("Checklist not found", ErrorType.NotFound);
+
+                }
+            }
         }
 
         public async Task<Result<ChecklistDto>> GetByTripIdAsync(Guid tripId, Guid userId)
         {
-            using (var tx = StateManager.CreateTransaction()) {
+            using (var tx = StateManager.CreateTransaction())
+            {
 
-                var result = checklistDictionary.TryGetValueAsync(tx, tripId);
+                var result = await checklistDictionary.TryGetValueAsync(tx, tripId);
 
-                if (result.Result.HasValue && result.Result.Value.UserId == userId) { 
-                
-                    
-                    return Result<ChecklistDto>.Success(result.Result.Value);
+                if (result.HasValue && result.Value.UserId == userId)
+                {
+
+
+                    return Result<ChecklistDto>.Success(result.Value);
 
                 }
 
@@ -119,9 +189,41 @@ namespace CheckListService
             return Result<ChecklistDto>.Failure("Checklist not found", ErrorType.NotFound);
         }
 
-        public Task<Result<ChecklistItemDto>> ToggleItemAsync(Guid itemId, Guid userId)
+        public async Task<Result<ChecklistItemDto>> ToggleItemAsync(Guid tripId, Guid itemId, Guid userId)
         {
-            throw new NotImplementedException();
+            using (var tx = StateManager.CreateTransaction())
+            {
+                var result = checklistDictionary.TryGetValueAsync(tx, tripId);
+
+                if (result.Result.HasValue && result.Result.Value.UserId == userId)
+                {
+
+                    var checklist = result.Result.Value;
+
+                    var item = checklist.Items.FirstOrDefault(i => i.Id == itemId);
+
+                    if (item != null)
+                    {
+                        item.IsChecked = !item.IsChecked;
+
+                        await checklistDictionary.SetAsync(tx, tripId, checklist);
+
+                        await sqlQueue.EnqueueAsync(tx, new QueueItem { userId = userId, OperationType = OperationTypes.Toggle, Payload = JsonSerializer.Serialize(itemId) });
+
+                        await tx.CommitAsync();
+
+                        return Result<ChecklistItemDto>.Success(item);
+                    }
+                    else
+                    {
+                        return Result<ChecklistItemDto>.Failure("Item not found", ErrorType.NotFound);
+                    }
+                }
+                else
+                {
+                    return Result<ChecklistItemDto>.Failure("Checklist not found", ErrorType.NotFound);
+                }
+            }
         }
 
         /// <summary>
@@ -147,18 +249,37 @@ namespace CheckListService
 
             sqlQueue = await StateManager.GetOrAddAsync<IReliableQueue<QueueItem>>("sqlQueue");
 
-            var allChecklists = await checklistService.GetAllAsync();
+            var loaded = false;
+            while (!loaded && !cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var allChecklists = await checklistService.GetAllAsync();
 
-            using (var tx = StateManager.CreateTransaction()) {
+                    if (allChecklists.Any())
+                    {
+                        using (var tx = StateManager.CreateTransaction())
+                        {
+                            foreach (var checklist in allChecklists)
+                            {
+                                await checklistDictionary.SetAsync(tx, checklist.TripId, checklist);
+                            }
+                            await tx.CommitAsync();
+                        }
+                    }
 
-                foreach (var checklist in allChecklists) {
+                    loaded = true;
 
-                    await checklistDictionary.SetAsync(tx, checklist.TripId, checklist);
-
+                    logger.LogInformation("Checklist dictionary successfully loaded from SQL.");
                 }
-
-                await tx.CommitAsync();
-
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "Failed to load checklists. Exception type: {ExceptionType}, Message: {Message}, InnerException: {InnerException}",
+                    ex.GetType().Name,
+                    ex.Message,
+                    ex.InnerException?.Message);
+                    await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+                }
             }
 
             while (!cancellationToken.IsCancellationRequested)
@@ -171,20 +292,56 @@ namespace CheckListService
                     {
                         var command = result.Value;
 
-                        switch (command.OperationType)
+
+                        try
                         {
-                            case OperationTypes.Create:
+                            switch (command.OperationType)
+                            {
+                                case OperationTypes.Create:
 
-                                // promeniti iz new Guid()-a u userId
+                                    var createItemQeueuDTO = JsonSerializer.Deserialize<CreateItemQueueDTO>(command.Payload);
 
-                                await checklistService.AddItemAsync(command.itemId,command.createDto, command.userId);
+                                    await checklistService.AddItemAsync(createItemQeueuDTO!.itemId, createItemQeueuDTO.createDto, createItemQeueuDTO.checklistDto!, command.userId);
+                                    logger.LogInformation("Successfully written to SQL for item: {ItemId}", createItemQeueuDTO.itemId);
+                                    break;
+                                case OperationTypes.Delete:
 
-                                break;
-                            case OperationTypes.Delete:
-                                break;
-                            case OperationTypes.Update:
-                                break;
+                                    var tripId = JsonSerializer.Deserialize<Guid>(command.Payload);
+
+                                    await checklistService.DeleteChecklistAsync(tripId, command.userId);
+
+                                    break;
+                                case OperationTypes.Toggle:
+
+                                    var itemId = JsonSerializer.Deserialize<Guid>(command.Payload);
+
+                                    await checklistService.ToggleItemAsync(itemId, command.userId);
+
+                                    break;
+                                case OperationTypes.DeleteItem:
+
+                                    var deleteItemId = JsonSerializer.Deserialize<Guid>(command.Payload);
+
+                                    await checklistService.DeleteItemAsync(deleteItemId, command.userId);
+
+                                    break;
+                            }
+
+                            await tx.CommitAsync();
                         }
+                        catch (Exception ex)
+                        {
+
+                            logger.LogError(ex, "Error processing queue item. OperationType: {OperationType}, Payload: {Payload}", command.OperationType, command.Payload);
+
+                            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+                        }
+
+
+                    }
+                    else
+                    {
+                        await Task.Delay(100, cancellationToken);
                     }
                 }
             }

@@ -21,9 +21,10 @@ namespace CheckListService.Repositories
             return checklist;
         }
 
-        public async Task DeleteChecklistAsync(Guid checklistId)
+        public async Task DeleteChecklistAsync(Guid tripId)
         {
-            var checklist = await GetByIdAsync(checklistId);
+
+            var checklist = await GetByTripIdAsync(tripId);
 
             if (checklist is null) return;
 
