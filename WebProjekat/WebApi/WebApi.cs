@@ -64,6 +64,7 @@ namespace WebApi
                         builder.Services.AddSingleton<TripServiceProxy>();
                         builder.Services.AddSingleton<UserServiceProxy>();
                         builder.Services.AddSingleton<ChecklistServiceProxy>();
+                        builder.Services.AddSingleton<MailingServiceProxy>();
 
                         var app = builder.Build();
                         if (app.Environment.IsDevelopment())

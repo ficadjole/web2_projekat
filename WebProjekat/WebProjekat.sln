@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckListService", "CheckLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckListService.Interfaces", "CheckListService.Interfaces\CheckListService.Interfaces.csproj", "{3C0A1F23-4246-4633-8811-65FA095CDAA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailingService", "MailingService\MailingService.csproj", "{6644EAA7-00E5-4F0F-8B85-7BCF4138DE95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailingService.Interface", "MailingService.Interface\MailingService.Interface.csproj", "{ED86039A-620E-434C-AAD7-D56D14D3DEEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +109,22 @@ Global
 		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Release|x64.ActiveCfg = Release|Any CPU
 		{3C0A1F23-4246-4633-8811-65FA095CDAA6}.Release|x64.Build.0 = Release|Any CPU
+		{6644EAA7-00E5-4F0F-8B85-7BCF4138DE95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6644EAA7-00E5-4F0F-8B85-7BCF4138DE95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6644EAA7-00E5-4F0F-8B85-7BCF4138DE95}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6644EAA7-00E5-4F0F-8B85-7BCF4138DE95}.Debug|x64.Build.0 = Debug|Any CPU
+		{6644EAA7-00E5-4F0F-8B85-7BCF4138DE95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6644EAA7-00E5-4F0F-8B85-7BCF4138DE95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6644EAA7-00E5-4F0F-8B85-7BCF4138DE95}.Release|x64.ActiveCfg = Release|Any CPU
+		{6644EAA7-00E5-4F0F-8B85-7BCF4138DE95}.Release|x64.Build.0 = Release|Any CPU
+		{ED86039A-620E-434C-AAD7-D56D14D3DEEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED86039A-620E-434C-AAD7-D56D14D3DEEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED86039A-620E-434C-AAD7-D56D14D3DEEB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ED86039A-620E-434C-AAD7-D56D14D3DEEB}.Debug|x64.Build.0 = Debug|Any CPU
+		{ED86039A-620E-434C-AAD7-D56D14D3DEEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED86039A-620E-434C-AAD7-D56D14D3DEEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED86039A-620E-434C-AAD7-D56D14D3DEEB}.Release|x64.ActiveCfg = Release|Any CPU
+		{ED86039A-620E-434C-AAD7-D56D14D3DEEB}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

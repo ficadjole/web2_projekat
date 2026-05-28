@@ -14,5 +14,8 @@ namespace TripService.Interfaces.DTOs.TripShare
 
         [DataMember]
         public int ExpiresInDays { get; set; }
+
+        [DataMember]
+        public string Email { get; set; } = string.Empty;
     }
 }

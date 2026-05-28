@@ -16,6 +16,10 @@ namespace WebApi.FluentValidations
             RuleFor(x => x.ExpiresInDays)
                 .GreaterThan(0).WithMessage("ExpiresInDays must be greater than zero.")
                 .LessThanOrEqualTo(30).WithMessage("Share link cannot exceed 30 days.");
+
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Email is required.")
+                .EmailAddress().WithMessage("Invalid email format.");
         }
     }
 }
