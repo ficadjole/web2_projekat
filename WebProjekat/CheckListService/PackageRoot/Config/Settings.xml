@@ -9,6 +9,6 @@
 
   <!-- Add your custom configuration sections and parameters here. -->
 	<Section Name="SqlConfig">
-		<Parameter Name="SqlConnectionString" Value="Server=localhost,1444;Database=TripsDB;User Id=sa;Password='LozinkaJakaWebProjekatSifra!#';TrustServerCertificate=True;" />
+		<Parameter Name="SqlConnectionString" Value="Server=localhost,1444;Database=CheckListsDB;User Id=sa;Password='LozinkaJakaWebProjekatSifra!#';TrustServerCertificate=True;" />
 	</Section>
 </Settings>

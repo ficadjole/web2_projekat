@@ -281,7 +281,7 @@ namespace CheckListService
                     await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
                 }
             }
-
+            logger.LogInformation("Dosli smo ovde!");
             while (!cancellationToken.IsCancellationRequested)
             {
                 using (var tx = StateManager.CreateTransaction())
@@ -292,7 +292,7 @@ namespace CheckListService
                     {
                         var command = result.Value;
 
-
+                        logger.LogInformation("Dosli smo ovde!");
                         try
                         {
                             switch (command.OperationType)
