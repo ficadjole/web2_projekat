@@ -32,7 +32,7 @@ namespace WebApi.Controllers
                 return BadRequest(new { Message = "Login failed", Errors = loginResult.Error!.Message });
             }
 
-            return Ok(new { loginResult.Value });
+            return Ok(loginResult.Value);
 
         }
 
@@ -55,7 +55,7 @@ namespace WebApi.Controllers
                 return BadRequest(new { Message = "Registration failed", Errors = registrationResult.Error!.Message });
             }
 
-            return Ok(new { registrationResult.Value });
+            return Ok(registrationResult.Value);
         }
     }
 }

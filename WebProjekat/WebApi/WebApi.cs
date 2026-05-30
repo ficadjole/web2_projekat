@@ -66,6 +66,14 @@ namespace WebApi
                         builder.Services.AddSingleton<ChecklistServiceProxy>();
                         builder.Services.AddSingleton<MailingServiceProxy>();
 
+                        builder.Services.AddCors(options =>
+                        {
+                            options.AddPolicy("AllowSpecificOrigin",
+                                builder => builder.WithOrigins("http://localhost:5173")
+                                                  .AllowAnyHeader()
+                                                  .AllowAnyMethod());
+                        });
+
                         var app = builder.Build();
                         if (app.Environment.IsDevelopment())
                         {
@@ -74,6 +82,7 @@ namespace WebApi
                         }
                         app.UseAuthorization();
                         app.MapControllers();
+                        app.UseCors("AllowSpecificOrigin");
 
                         return app;
 

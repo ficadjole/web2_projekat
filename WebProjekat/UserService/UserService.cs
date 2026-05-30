@@ -10,6 +10,7 @@ using System.Fabric;
 using UserService.DatabaseContext;
 using UserService.DTOs;
 using UserService.Interfaces;
+using UserService.Interfaces.DTOs;
 using UserService.Repositories;
 using UserService.Services;
 using WebProjekat.Common;
@@ -78,6 +79,11 @@ namespace UserService
             return userBusinessService.DeleteUser(Guid.Parse(id));
         }
 
+        public Task<Result<UserDto>> GetByIdAsync(Guid id)
+        {
+            return userBusinessService.GetByIdAsync(id);
+        }
+
         public Task<Result<IEnumerable<UserDto>>> GetUsersAsync()
         {
             return userBusinessService.GetAllUsers();
@@ -91,6 +97,16 @@ namespace UserService
         public Task<Result<AuthResponseDto>> RegisterAsync(string name, string email, string password, string role)
         {
             return _authService.RegisterAsync(name, email, password, role);
+        }
+
+        public Task<Result<UserDto>> UpdateRoleAsync(Guid id, UpdateUserRoleDto dto)
+        {
+            return userBusinessService.UpdateRoleAsync(id, dto);
+        }
+
+        public Task<Result<UserDto>> UpdateUserAsync(Guid id, UpdateUserDto dto, Guid requestingUserId)
+        {
+            return userBusinessService.UpdateUserAsync(id, dto, requestingUserId);
         }
 
         /// <summary>

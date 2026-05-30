@@ -1,7 +1,9 @@
 ﻿using Common.Enums;
 using UserService.DTOs;
 using UserService.Interfaces;
+using UserService.Interfaces.DTOs;
 using UserService.Mappers;
+using UserService.Repositories;
 using WebProjekat.Common;
 
 namespace UserService.Services
@@ -50,6 +52,75 @@ namespace UserService.Services
                 return Result<IEnumerable<UserDto>>.Failure("An error occurred during authentication. Please try again later.", ErrorType.Unexpected);
 
             }
+        }
+
+        public async Task<Result<UserDto>> UpdateUserAsync(Guid id, UpdateUserDto dto, Guid requestingUserId)
+        {
+            var user = await userRepository.GetByIdAsync(id);
+            if (user is null)
+                return Result<UserDto>.Failure("User not found.", ErrorType.NotFound);
+
+            if (user.Id != requestingUserId)
+            {
+                var requestingUser = await userRepository.GetByIdAsync(requestingUserId);
+                if (requestingUser?.Role != UserRoles.Admin)
+                    return Result<UserDto>.Failure("Unauthorized.", ErrorType.Unauthorized);
+            }
+
+            var emailExists = await userRepository.GetByEmailAsync(dto.Email);
+            if (emailExists is not null && emailExists.Id != id)
+                return Result<UserDto>.Failure("Email already in use.", ErrorType.Validation);
+
+            user.Name = dto.Name;
+            user.Email = dto.Email;
+
+            await userRepository.UpdateAsync(user);
+
+            return Result<UserDto>.Success(new UserDto
+            {
+                Id = user.Id.ToString(),
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role.ToString()
+            });
+        }
+
+        public async Task<Result<UserDto>> UpdateRoleAsync(Guid id, UpdateUserRoleDto dto)
+        {
+            var user = await userRepository.GetByIdAsync(id);
+            if (user is null)
+                return Result<UserDto>.Failure("User not found.", ErrorType.NotFound);
+
+            if (!Enum.TryParse<UserRoles>(dto.Role, out var newRole))
+                return Result<UserDto>.Failure("Invalid role.", ErrorType.Validation);
+
+            user.Role = newRole;
+
+            await userRepository.UpdateAsync(user);
+
+            return Result<UserDto>.Success(new UserDto
+            {
+                Id = user.Id.ToString(),
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role.ToString()
+            });
+        }
+
+        public async Task<Result<UserDto>> GetByIdAsync(Guid id)
+        {
+            var user = await userRepository.GetByIdAsync(id);
+
+            if (user is null)
+                return Result<UserDto>.Failure("User not found.", ErrorType.NotFound);
+
+            return Result<UserDto>.Success(new UserDto
+            {
+                Id = user.Id.ToString(),
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role.ToString()
+            });
         }
     }
 }
