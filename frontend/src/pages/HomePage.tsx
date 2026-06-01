@@ -3,11 +3,13 @@ import TripList from "../components/trips/TripList";
 import type { Trip } from "../models/tripService/Trip";
 import { Navbar } from "../components/layout/Navbar";
 import { tripApiService } from "../api_services/trip/TripApiService";
+import { CreateTripModal } from "../components/trips/CreateTripModal";
 
 export function HomePage() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   useEffect(() => {
     tripApiService
@@ -16,6 +18,22 @@ export function HomePage() {
       .catch((err) => setError(err.response?.data || "Failed to load trips."))
       .finally(() => setIsLoading(false));
   }, []);
+
+  const handleTripCreated = (trip: Trip) => {
+    setTrips((prev) => [...prev, trip]);
+  };
+
+  const handleTripDeleted = (deletedId: string) => {
+    setTrips((prevTrips) => prevTrips.filter((t) => t.id !== deletedId));
+  };
+
+  const handleTripUpdated = (updatedTrip: Trip) => {
+    setTrips((prevTrips) =>
+      prevTrips.map((trip) =>
+        trip.id === updatedTrip.id ? updatedTrip : trip,
+      ),
+    );
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -61,9 +79,19 @@ export function HomePage() {
             </div>
           </div>
         ) : (
-          <TripList trips={trips} />
+          <TripList
+            trips={trips}
+            onAddTrip={() => setIsCreateModalOpen(true)}
+            onDeleted={handleTripDeleted}
+            onUpdated={handleTripUpdated}
+          />
         )}
       </main>
+      <CreateTripModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreated={handleTripCreated}
+      />
     </div>
   );
 }

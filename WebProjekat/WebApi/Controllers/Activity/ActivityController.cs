@@ -57,7 +57,7 @@ namespace WebApi.Controllers.Activity
         [HttpPost]
         [Authorize]
         [Route("create")]
-        public async Task<IActionResult> Create([FromForm] CreateActivityRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateActivityRequest request)
         {
             var validatorResult = await createValidator.ValidateAsync(request);
 
@@ -87,7 +87,7 @@ namespace WebApi.Controllers.Activity
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> Update(Guid id, [FromForm] UpdateActivityRequest request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateActivityRequest request)
         {
             var validatorResult = await updateValidator.ValidateAsync(request);
 

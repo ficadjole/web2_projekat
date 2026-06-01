@@ -49,6 +49,7 @@ namespace TripService.Services
                 return Result<TripDetailsDto>.Failure("Unauthorized.", ErrorType.Unauthorized);
 
             var totalExpenses = trip.Expenses?.Sum(e => e.Amount) ?? 0;
+            var activitiesTotal = trip.Destinations.SelectMany(d => d.Activities).Sum(a => a.EstimatedCost);
 
             var dto = new TripDetailsDto
             {
@@ -59,8 +60,8 @@ namespace TripService.Services
                 EndDate = trip.EndDate,
                 PlannedBudget = trip.PlannedBudget,
                 UserId = trip.UserId,
-                TotalExpenses = totalExpenses,
-                RemainingBudget = trip.PlannedBudget - totalExpenses,
+                TotalExpenses = totalExpenses+activitiesTotal,
+                RemainingBudget = trip.PlannedBudget - totalExpenses - activitiesTotal,
                 Destinations = trip.Destinations?.Select(MapDestinationToDto.MapToDto) ?? [],
                 Expenses = trip.Expenses?.Select(MapExpenseToDto.MapToDto) ?? []
             };

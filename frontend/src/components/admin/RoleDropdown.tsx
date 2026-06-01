@@ -1,8 +1,4 @@
-interface RoleDropdownProps {
-  userId: string;
-  currentRole: "User" | "Admin";
-  onRoleChange: (id: string, role: "User" | "Admin") => void;
-}
+import type { RoleDropdownProps } from "../../props/RoleDropdownProps";
 
 export function RoleDropdown({
   userId,

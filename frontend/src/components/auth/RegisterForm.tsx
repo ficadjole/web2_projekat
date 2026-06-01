@@ -69,10 +69,16 @@ export function RegisterForm() {
       await register(form);
       navigate("/home");
     } catch (err: any) {
-      if (err.response?.data) {
-        setApiError(err.response.data);
+      const data = err.response?.data;
+
+      if (typeof data === "string") {
+        setApiError(data);
+      } else if (data?.message) {
+        setApiError(data.message);
+      } else if (data?.errors) {
+        setApiError(Object.values(data.errors).flat().join(", "));
       } else {
-        setApiError(err.message || "Registration failed. Please try again.");
+        setApiError(err.message || "Login failed.");
       }
     } finally {
       setIsLoading(false);

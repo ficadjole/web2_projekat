@@ -16,7 +16,7 @@ namespace WebApi.Controllers.Trip
         [HttpPost]
         [Authorize]
         [Route("create")]
-        public async Task<IActionResult> Create([FromForm] CreateTripRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateTripRequest request)
         {
             var validatorResult = await createValidator.ValidateAsync(request);
 
@@ -80,7 +80,7 @@ namespace WebApi.Controllers.Trip
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> Update(Guid id, [FromForm] UpdateTripRequest request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateTripRequest request)
         {
             var validatorResult = await updateValidator.ValidateAsync(request);
 

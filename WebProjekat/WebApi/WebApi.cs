@@ -3,6 +3,7 @@ using Microsoft.ServiceFabric.Services.Communication.AspNetCore;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using System.Fabric;
+using System.Text.Json.Serialization;
 using WebApi.Extensions;
 using WebApi.FluentValidations;
 using WebApi.Services;
@@ -39,7 +40,7 @@ namespace WebApi
                                     .UseContentRoot(Directory.GetCurrentDirectory())
                                     .UseServiceFabricIntegration(listener, ServiceFabricIntegrationOptions.None)
                                     .UseUrls(url);
-                        builder.Services.AddControllers();
+                        builder.Services.AddControllers().AddJsonOptions(options=>{options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
                         builder.Services.AddEndpointsApiExplorer();
                         builder.Services.AddSwaggerGen();
                         builder.Services.AddJwtAuthentification(builder.Configuration);

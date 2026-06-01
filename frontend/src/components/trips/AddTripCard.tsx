@@ -1,11 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import type { AddTripCardProps } from "../../props/AddTripCardProps";
 
-export function AddTripCard() {
-  const navigate = useNavigate();
-
+export function AddTripCard({ onClick }: AddTripCardProps) {
   return (
     <div
-      onClick={() => navigate("/trips/create")}
+      onClick={onClick}
       className="bg-white rounded-2xl border-2 border-dashed border-slate-200 p-5
         hover:border-blue-300 hover:bg-blue-50/30 hover:-translate-y-0.5
         transition-all duration-200 cursor-pointer group
@@ -40,5 +38,3 @@ export function AddTripCard() {
     </div>
   );
 }
-
-export default AddTripCard;

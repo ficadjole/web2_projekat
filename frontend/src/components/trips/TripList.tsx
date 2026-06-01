@@ -1,12 +1,13 @@
-import type { Trip } from "../../models/tripService/Trip";
-import AddTripCard from "./AddTripCard";
+import type { TripListProps } from "../../props/TripListProps";
+import { AddTripCard } from "./AddTripCard";
 import { TripCard } from "./TripCard";
 
-interface TripListProps {
-  trips: Trip[];
-}
-
-export function TripList({ trips }: TripListProps) {
+export function TripList({
+  trips,
+  onAddTrip,
+  onUpdated,
+  onDeleted,
+}: TripListProps) {
   if (trips.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -17,7 +18,7 @@ export function TripList({ trips }: TripListProps) {
             Start planning your first adventure
           </p>
         </div>
-        <AddTripCard />
+        <AddTripCard onClick={onAddTrip} />
       </div>
     );
   }
@@ -25,9 +26,14 @@ export function TripList({ trips }: TripListProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {trips.map((trip) => (
-        <TripCard key={trip.id} trip={trip} />
+        <TripCard
+          key={trip.id}
+          trip={trip}
+          onUpdated={onUpdated}
+          onDeleted={onDeleted}
+        />
       ))}
-      <AddTripCard />
+      <AddTripCard onClick={onAddTrip} />
     </div>
   );
 }

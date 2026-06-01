@@ -28,7 +28,7 @@ namespace WebApi.Controllers.Checklist
         [HttpPost]
         [Authorize]
         [Route("items/add")]
-        public async Task<IActionResult> AddItem([FromForm] AddChecklistItemRequest request)
+        public async Task<IActionResult> AddItem([FromBody] AddChecklistItemRequest request)
         {
             var validatorResult = await addValidator.ValidateAsync(request);
 

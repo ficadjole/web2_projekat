@@ -1,12 +1,5 @@
-import type { User } from "../../models/user/User";
+import type { UserTableProps } from "../../props/UserTableProps";
 import { UserRow } from "./UserRow";
-
-interface UserTableProps {
-  users: User[];
-  onEdit: (user: User) => void;
-  onDelete: (id: string) => void;
-  onRoleChange: (id: string, role: "User" | "Admin") => void;
-}
 
 export function UserTable({
   users,

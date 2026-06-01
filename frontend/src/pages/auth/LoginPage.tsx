@@ -10,10 +10,10 @@ export default function LoginPage() {
         backgroundPosition: "center",
       }}
     >
-      {/* Overlay */}
+
       <div className="absolute inset-0 bg-gradient-to-b from-blue-950/60 via-blue-900/50 to-blue-950/70" />
 
-      {/* Card */}
+
       <div className="relative z-10 w-full max-w-md mx-4">
         <div
           className="

@@ -41,7 +41,7 @@ namespace WebApi.Controllers.TripShare
         [HttpPost]
         [Authorize]
         [Route("create")]
-        public async Task<IActionResult> Create([FromForm] CreateTripShareRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateTripShareRequest request)
         {
             var validatorResult = await createValidator.ValidateAsync(request);
 

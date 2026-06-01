@@ -73,7 +73,7 @@ namespace WebApi.Controllers.Expense
         [HttpPost]
         [Authorize]
         [Route("create")]
-        public async Task<IActionResult> Create([FromForm] CreateExpenseRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateExpenseRequest request)
         {
             var validatorResult = await createValidator.ValidateAsync(request);
 
@@ -101,7 +101,7 @@ namespace WebApi.Controllers.Expense
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> Update(Guid id, [FromForm] UpdateExpenseRequest request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateExpenseRequest request)
         {
             var validatorResult = await updateValidator.ValidateAsync(request);
 

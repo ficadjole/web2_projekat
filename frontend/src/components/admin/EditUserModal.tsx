@@ -1,11 +1,5 @@
 import { useState, useEffect } from "react";
-import type { User } from "../../models/user/User";
-
-interface EditUserModalProps {
-  user: User | null;
-  onClose: () => void;
-  onSave: (id: string, name: string, email: string) => Promise<void>;
-}
+import type { EditUserModalProps } from "../../props/EditUserModal";
 
 export function EditUserModal({ user, onClose, onSave }: EditUserModalProps) {
   const [name, setName] = useState("");
@@ -24,7 +18,6 @@ export function EditUserModal({ user, onClose, onSave }: EditUserModalProps) {
   if (!user) return null;
 
   const handleSave = async () => {
-
     if (!name.trim() || !email.trim()) {
       setError("All fields are required.");
       return;

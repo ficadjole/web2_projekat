@@ -1,9 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import type { TripDetails } from "../../../models/tripService/TripDetails";
-
-interface TripDetailHeaderProps {
-  trip: TripDetails;
-}
+import type { TripDetailHeaderProps } from "../../../props/TripDetailHeaderProps";
 
 export function TripDetailHeader({ trip }: TripDetailHeaderProps) {
   const navigate = useNavigate();
@@ -67,7 +63,6 @@ export function TripDetailHeader({ trip }: TripDetailHeaderProps) {
           </div>
         </div>
 
-        {/* Budget summary */}
         <div className="flex gap-3">
           <div className="text-center px-4 py-3 bg-slate-50 rounded-xl border border-slate-100">
             <p className="text-xs text-slate-400 mb-1">Budget</p>
