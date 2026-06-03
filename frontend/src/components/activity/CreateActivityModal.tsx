@@ -64,7 +64,7 @@ const CreateActivityModal = ({
     if (cost > remainingBudget) {
       newErrors.estimatedCost = `Cost exceeds remaining budget of $${remainingBudget}.`;
     }
-    
+
     if (!form.name.trim()) newErrors.name = "Name is required.";
 
     if (!form.location.trim()) newErrors.location = "Location is required.";
@@ -153,6 +153,8 @@ const CreateActivityModal = ({
             value={form.date}
             onChange={handleChange("date")}
             error={errors.date}
+            min={destStartDate}
+            max={destEndDate}
           />
           <ModalInput
             label="Estimated Cost ($)"

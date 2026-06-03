@@ -8,6 +8,8 @@ interface ModalInputProps {
   error?: string;
   placeholder?: string;
   textarea?: boolean;
+  min?: string;
+  max?: string;
 }
 
 export function ModalInput({
@@ -18,6 +20,8 @@ export function ModalInput({
   error,
   placeholder,
   textarea,
+  min,
+  max,
 }: ModalInputProps) {
   const baseClass = `
     w-full px-4 py-2.5 rounded-xl border text-slate-800 text-sm
@@ -44,6 +48,8 @@ export function ModalInput({
           onChange={onChange}
           placeholder={placeholder}
           className={baseClass}
+          min={min}
+          max={max}
         />
       )}
       {error && <span className="text-xs text-red-500">{error}</span>}

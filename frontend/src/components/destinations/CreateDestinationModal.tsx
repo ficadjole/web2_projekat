@@ -43,6 +43,9 @@ export function CreateDestinationModal({
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const formattedMin = tripStartDate ? tripStartDate.split("T")[0] : "";
+  const formattedMax = tripEndDate ? tripEndDate.split("T")[0] : "";
+
   const handleChange =
     (field: keyof FormState) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -154,6 +157,8 @@ export function CreateDestinationModal({
             value={form.arrivingDate}
             onChange={handleChange("arrivingDate")}
             error={errors.arrivingDate}
+            min={formattedMin}
+            max={formattedMax}
           />
           <ModalInput
             label="Leaving Date"
@@ -161,6 +166,8 @@ export function CreateDestinationModal({
             value={form.leavingDate}
             onChange={handleChange("leavingDate")}
             error={errors.leavingDate}
+            min={formattedMin}
+            max={formattedMax}
           />
         </div>
 

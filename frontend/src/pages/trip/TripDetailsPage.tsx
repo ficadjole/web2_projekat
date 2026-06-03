@@ -12,6 +12,8 @@ import { ActivityCalendar } from "../../components/activity/ActivityCalendar";
 import { ExpenseSection } from "../../components/expenses/ExpenseSection";
 import { ChecklistSection } from "../../components/checklist/ChecklistSection";
 import { CreateDestinationModal } from "../../components/destinations/CreateDestinationModal";
+import { ShareTripModal } from "../../components/trips/share/ShareTripModal";
+import { recalculateFinances } from "../../helpers/recalculateFinances";
 
 export function TripDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -21,6 +23,7 @@ export function TripDetailsPage() {
   const [activeTab, setActiveTab] = useState<
     "overview" | "calendar" | "expenses" | "checklist"
   >("overview");
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const [isDestinationModalOpen, setIsDestinationModalOpen] = useState(false);
 
@@ -45,28 +48,6 @@ export function TripDetailsPage() {
           }
         : prev,
     );
-  };
-
-  const recalculateFinances = (tripData: TripDetails) => {
-    const expensesTotal =
-      tripData.expenses?.reduce((sum, e) => sum + e.amount, 0) || 0;
-    const activitiesTotal =
-      tripData.destinations?.reduce((sum, d) => {
-        return (
-          sum +
-          (d.activities?.reduce(
-            (aSum, act) => aSum + Number(act.estimatedCost || 0),
-            0,
-          ) || 0)
-        );
-      }, 0) || 0;
-
-    const total = expensesTotal + activitiesTotal;
-    return {
-      ...tripData,
-      totalExpenses: total,
-      remainingBudget: tripData.plannedBudget - total,
-    };
   };
 
   const handleDestinationUpdated = (updatedDestination: Destination) => {
@@ -229,7 +210,10 @@ export function TripDetailsPage() {
     <div className="min-h-screen bg-slate-50">
       <Navbar />
       <main className="max-w-6xl mx-auto px-6 py-8">
-        <TripDetailHeader trip={trip} />
+        <TripDetailHeader
+          trip={trip}
+          onShare={() => setIsShareModalOpen(true)}
+        />
 
         <div className="flex gap-1 bg-white border border-slate-100 rounded-2xl p-1 mb-6 shadow-sm">
           {tabs.map((tab) => (
@@ -302,6 +286,7 @@ export function TripDetailsPage() {
                     onActivityUpdated={handleActivityUpdated}
                     onActivityDeleted={handleActivityDeleted}
                     onDestinationDeleted={handleDestinationDeleted}
+                    readonly={false}
                   />
                 ))}
               </div>
@@ -339,6 +324,12 @@ export function TripDetailsPage() {
         onCreated={handleDestinationCreated}
         tripStartDate={trip.startDate}
         tripEndDate={trip.endDate}
+      />
+
+      <ShareTripModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        tripId={id!}
       />
     </div>
   );

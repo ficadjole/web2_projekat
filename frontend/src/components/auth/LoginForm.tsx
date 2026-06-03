@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/auth/useAuthHook";
 import type { LoginRequest } from "../../dtos/LoginRequest";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthError from "./AuthError";
 import FormInput from "./FormInput";
 
 export function LoginForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState<LoginRequest>({
     email: "",
@@ -51,7 +52,8 @@ export function LoginForm() {
     try {
       await login(form);
 
-      navigate("/home");
+      const from = location.state?.from || "/home";
+      navigate(from, { replace: true });
     } catch (err: any) {
       const data = err.response?.data;
 

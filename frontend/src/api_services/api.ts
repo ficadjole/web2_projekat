@@ -1,8 +1,15 @@
 import axios from "axios";
 import { readItem } from "../helpers/local_storage";
 
+const getBaseUrl = () => {
+  if (window.location.hostname.includes("ngrok")) {
+    return "https://take-submarine-collapse.ngrok-free.dev";
+  }
+  return import.meta.env.VITE_API_URL;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: getBaseUrl(),
 });
 
 // Automatski dodaje token u svaki request

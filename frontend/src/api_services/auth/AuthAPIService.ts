@@ -5,16 +5,14 @@ import api from "../api";
 import type { RegisterRequest } from "../../dtos/RegisterRequest";
 import { removeItem } from "../../helpers/local_storage";
 
-const BASE = import.meta.env.VITE_API_URL + "Auth";
-
 export const authApi: IAuthAPIService = {
   async login(loginData: LoginRequest) {
-    const response = await api.post<AuthResponse>(`${BASE}/login`, loginData);
+    const response = await api.post<AuthResponse>(`/api/Auth/login`, loginData);
     return response.data;
   },
   async register(registerData: RegisterRequest) {
     const response = await api.post<AuthResponse>(
-      `${BASE}/registration`,
+      `/api/Auth/registration`,
       registerData,
     );
     return response.data;

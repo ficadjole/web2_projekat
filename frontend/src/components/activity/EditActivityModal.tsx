@@ -128,6 +128,8 @@ export function EditActivityModal({
             value={form.date}
             onChange={handleChange("date")}
             error={errors.date}
+            min={destStartDate}
+            max={destEndDate}
           />
           <ModalInput
             label="Estimated Cost ($)"

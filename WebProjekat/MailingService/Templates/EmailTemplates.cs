@@ -10,6 +10,8 @@ namespace MailingService.Templates
             var accessTypeText = shareDto.AccessType == ShareAccessType.View ? "View Only" : "View & Edit";
             var accessTypeColor = shareDto.AccessType == ShareAccessType.View ? "#3498db" : "#2ecc71";
 
+            string qrImageUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={Uri.EscapeDataString(shareDto.ShareUrl)}";
+
             return $@"
             <!DOCTYPE html>
             <html>
@@ -88,7 +90,7 @@ namespace MailingService.Templates
                     </div>
 
                     <div class='qr-container'>
-                        <img src='data:image/png;base64,{shareDto.QrCodeBase64}' alt='QR Code' />
+                        <img src='{qrImageUrl}' alt='QR Code' />
                         <p>Scan the QR code to access the trip plan</p>
                     </div>
 

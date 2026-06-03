@@ -70,7 +70,7 @@ namespace WebApi
                         builder.Services.AddCors(options =>
                         {
                             options.AddPolicy("AllowSpecificOrigin",
-                                builder => builder.WithOrigins("http://localhost:5173")
+                                builder => builder.WithOrigins("http://localhost:5173","https://take-submarine-collapse.ngrok-free.dev")
                                                   .AllowAnyHeader()
                                                   .AllowAnyMethod());
                         });
@@ -81,9 +81,9 @@ namespace WebApi
                         app.UseSwagger();
                         app.UseSwaggerUI();
                         }
+                        app.UseCors("AllowSpecificOrigin");
                         app.UseAuthorization();
                         app.MapControllers();
-                        app.UseCors("AllowSpecificOrigin");
 
                         return app;
 

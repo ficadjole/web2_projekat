@@ -4,6 +4,6 @@
 		<Parameter Name="SqlConnectionString" Value="Server=localhost,1444;Database=TripsDB;User Id=sa;Password='LozinkaJakaWebProjekatSifra!#';TrustServerCertificate=True;" />
 	</Section>
 	<Section Name="BaseAppSettings">
-		<Parameter Name="BaseUrl" Value="https://localhost:5000"/>
+		<Parameter Name="BaseUrl" Value=" https://take-submarine-collapse.ngrok-free.dev/shared"/>
 	</Section>
 </Settings>

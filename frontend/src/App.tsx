@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/protected_route/ProtectedRoute";
 import { AdminDashboardPage } from "./pages/admin/AdminDashboard";
 import { HomePage } from "./pages/HomePage";
 import { TripDetailsPage } from "./pages/trip/TripDetailsPage";
+import { SharedTripPage } from "./pages/trip/SharedTripPage";
 
 export default function App() {
   return (
@@ -36,7 +37,9 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+
       <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="/shared/:token" element={<SharedTripPage />} />
     </Routes>
   );
 }

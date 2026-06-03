@@ -17,7 +17,7 @@ namespace TripService.Interfaces.DTOs.TripShare
         [DataMember]
         public DateTime ExpiresAt { get; set; }
         [DataMember]
-        public string QrCodeBase64 { get; set; } = string.Empty;
+        public string ShareUrl { get; set; } = string.Empty;
 
     }
 }

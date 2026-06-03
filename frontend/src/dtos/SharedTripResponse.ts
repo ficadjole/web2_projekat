@@ -1,6 +1,6 @@
 import type { TripDetails } from "../models/tripService/TripDetails";
 
-export interface TripDetailHeaderProps {
+export interface SharedTripResponse {
   trip: TripDetails;
-  onShare: () => void;
+  accessType: "View" | "Edit";
 }

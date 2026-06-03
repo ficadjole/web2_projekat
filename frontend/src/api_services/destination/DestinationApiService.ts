@@ -4,13 +4,14 @@ import type { Destination } from "../../models/tripService/Destination";
 import api from "../api";
 import type { IDestinationApiService } from "./IDestinationApiService";
 
-const BASE = import.meta.env.VITE_API_URL + "Destination";
-
 export const destinationApiService: IDestinationApiService = {
   createDestination: async (
     data: CreateDestinationData,
   ): Promise<Destination> => {
-    const response = await api.post<Destination>(`${BASE}/create`, data);
+    const response = await api.post<Destination>(
+      `/api/Destination/create`,
+      data,
+    );
 
     return response.data;
   },
@@ -18,11 +19,11 @@ export const destinationApiService: IDestinationApiService = {
     data: UpdateDestinationRequest,
     id: string,
   ): Promise<Destination> => {
-    const response = await api.put<Destination>(`${BASE}/${id}`, data);
+    const response = await api.put<Destination>(`/api/Destination/${id}`, data);
 
     return response.data;
   },
   deleteDestination: async (id: string): Promise<void> => {
-    await api.delete(`${BASE}/${id}`);
+    await api.delete(`/api/Destination/${id}`);
   },
 };

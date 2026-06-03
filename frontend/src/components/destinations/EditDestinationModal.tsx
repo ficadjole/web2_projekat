@@ -25,6 +25,9 @@ const EditDestinationModal = ({
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const formattedMin = tripStartDate ? tripStartDate.split("T")[0] : "";
+  const formattedMax = tripEndDate ? tripEndDate.split("T")[0] : "";
+
   useEffect(() => {
     if (destination) {
       setForm({
@@ -131,6 +134,8 @@ const EditDestinationModal = ({
             value={form.arrivingDate}
             onChange={handleChange("arrivingDate")}
             error={errors.arrivingDate}
+            min={formattedMin}
+            max={formattedMax}
           />
           <ModalInput
             label="Leaving Date"
@@ -138,6 +143,8 @@ const EditDestinationModal = ({
             value={form.leavingDate}
             onChange={handleChange("leavingDate")}
             error={errors.leavingDate}
+            min={formattedMin}
+            max={formattedMax}
           />
         </div>
         <div className="flex gap-3 pt-2">

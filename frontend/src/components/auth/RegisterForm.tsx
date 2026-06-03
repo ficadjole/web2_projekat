@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/auth/useAuthHook";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { RegisterRequest } from "../../dtos/RegisterRequest";
 import AuthError from "./AuthError";
 import FormInput from "./FormInput";
@@ -8,6 +8,7 @@ import FormInput from "./FormInput";
 export function RegisterForm() {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState<RegisterRequest>({
     name: "",
@@ -67,7 +68,9 @@ export function RegisterForm() {
 
     try {
       await register(form);
-      navigate("/home");
+
+      const from = location.state?.from || "/home";
+      navigate(from, { replace: true });
     } catch (err: any) {
       const data = err.response?.data;
 

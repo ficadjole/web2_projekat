@@ -51,9 +51,7 @@ namespace TripService.Services
 
             await _tripShareRepository.AddAsync(tripShare.Value);
 
-            var shareUrl = $"{_baseUrl}/api/trip-shares/{token}";
-
-            var qrCodeBase64 = new TripShareHelpers().GenerateQrCode(shareUrl);
+            var shareUrl = $"{_baseUrl}/{token}";
 
             var tripShareDto = new TripShareDto()
             {
@@ -62,7 +60,7 @@ namespace TripService.Services
                 Token = tripShare.Value.Token,
                 AccessType = tripShare.Value.AccessType,
                 ExpiresAt = tripShare.Value.ExpiresAt,
-                QrCodeBase64 = qrCodeBase64
+                ShareUrl = shareUrl
             };
 
             return Result<TripShareDto>.Success(tripShareDto);

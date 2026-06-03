@@ -12,4 +12,5 @@ export interface DestinationCardProps {
   onActivityUpdated: (destinationId: string, activity: Activity) => void;
   onDestinationDeleted: (destinationId: string) => void;
   onActivityDeleted: (destinationId: string, activityId: string) => void;
+  readonly?: boolean;
 }
