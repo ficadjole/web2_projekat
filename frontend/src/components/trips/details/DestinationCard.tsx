@@ -4,9 +4,8 @@ import CreateActivityModal from "../../activity/CreateActivityModal";
 import type { DestinationCardProps } from "../../../props/DestinationCardProps";
 import EditDestinationModal from "../../destinations/EditDestinationModal";
 import { EditActivityModal } from "../../activity/EditActivityModal";
-import { destinationApiService } from "../../../api_services/destination/DestinationApiService";
-import { activityApiService } from "../../../api_services/acitivity/ActivityApiService";
 import { ConfirmDeleteModal } from "../../ui/ConfirmDeleteModal";
+import { useServices } from "../../../contexts/ServiceContext";
 
 export function DestinationCard({
   destination,
@@ -24,6 +23,7 @@ export function DestinationCard({
   const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
   const [isEditDestinationOpen, setIsEditDestinationOpen] = useState(false);
   const [activityToEdit, setActivityToEdit] = useState<Activity | null>(null);
+  const { destinationApiService, activityApiService } = useServices();
 
   const [deleteTarget, setDeleteTarget] = useState<{
     type: "destination" | "activity";

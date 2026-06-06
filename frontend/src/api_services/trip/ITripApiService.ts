@@ -5,6 +5,7 @@ import type { TripDetails } from "../../models/tripService/TripDetails";
 
 export interface ITripApiService {
   getAllTrips(): Promise<Trip[]>;
+  getAllTripsAdmin(): Promise<Trip[]>;
   getTripById(id: string): Promise<Trip>;
   getTripWithDetails(id: string): Promise<TripDetails>;
   createTrip(data: CreateTripRequest): Promise<Trip>;

@@ -23,7 +23,7 @@ namespace WebApi.Controllers.Trip
             if (!validatorResult.IsValid)
                 return BadRequest(validatorResult.Errors);
 
-            var dto = new CreateTripDto { Name = request.Name, Description = request.Description, StartDate = request.StartDate, EndDate = request.EndDate, PlannedBudget = request.PlannedBudget };
+            var dto = new CreateTripDto { Name = request.Name, Description = request.Description, StartDate = request.StartDate, EndDate = request.EndDate, PlannedBudget = request.PlannedBudget, Notes = request.Notes };
 
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
@@ -93,7 +93,9 @@ namespace WebApi.Controllers.Trip
                 Description = request.Description,
                 StartDate = request.StartDate,
                 EndDate = request.EndDate,
-                PlannedBudget = request.PlannedBudget
+                PlannedBudget = request.PlannedBudget,
+                Notes = request.Notes
+
             };
 
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
@@ -118,6 +120,18 @@ namespace WebApi.Controllers.Trip
                 return BadRequest(result.Error!.Message);
 
             return Ok("Trip deleted successfully.");
+        }
+
+        [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllTrips()
+        {
+            var result = await proxy.GetTripProxy().GetAllAsync();
+
+            if (result.IsFailure)
+                return BadRequest(result.Error!.Message);
+
+            return Ok(result.Value);
         }
     }
 }

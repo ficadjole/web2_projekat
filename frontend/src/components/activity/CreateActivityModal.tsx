@@ -1,25 +1,16 @@
-import { useState } from "react";
 import { Modal } from "../ui/Modal";
 import { ModalInput } from "../ui/ModalInput";
-import { activityApiService } from "../../api_services/acitivity/ActivityApiService";
-import type { CreateActivityRequest } from "../../dtos/CreateActivityRequest";
 import type { CreateActivityModalProps } from "../../props/CreateActivityModal";
+import { useActivityForm } from "../../hooks/activity/useActivityForm";
 
-interface FormState {
-  name: string;
-  location: string;
-  description: string;
-  date: string;
-  estimatedCost: string;
-  status: "Planned" | "Reserved" | "Finished" | "Cancelled";
-}
-
-interface FormErrors {
-  name?: string;
-  location?: string;
-  date?: string;
-  estimatedCost?: string;
-}
+const defaultInitialState = {
+  name: "",
+  location: "",
+  description: "",
+  date: "",
+  estimatedCost: "",
+  status: "Planned" as const,
+};
 
 const CreateActivityModal = ({
   isOpen,
@@ -30,88 +21,17 @@ const CreateActivityModal = ({
   destStartDate,
   remainingBudget,
 }: CreateActivityModalProps) => {
-  const [form, setForm] = useState<FormState>({
-    name: "",
-    location: "",
-    description: "",
-    date: "",
-    estimatedCost: "",
-    status: "Planned",
-  });
-
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [apiError, setApiError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleChange =
-    (field: keyof FormState) =>
-    (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-      >,
-    ) => {
-      setForm((prev) => ({ ...prev, [field]: e.target.value }));
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    };
-
-  const validate = (): boolean => {
-    const newErrors: FormErrors = {};
-    const activityDateOnly = form.date.split("T")[0];
-    const destStartOnly = destStartDate.split("T")[0];
-    const destEndOnly = destEndDate.split("T")[0];
-
-    const cost = Number(form.estimatedCost) || 0;
-    if (cost > remainingBudget) {
-      newErrors.estimatedCost = `Cost exceeds remaining budget of $${remainingBudget}.`;
-    }
-
-    if (!form.name.trim()) newErrors.name = "Name is required.";
-
-    if (!form.location.trim()) newErrors.location = "Location is required.";
-
-    if (!form.date) newErrors.date = "Date is required.";
-
-    if (form.estimatedCost && Number(form.estimatedCost) < 0)
-      newErrors.estimatedCost = "Cost cannot be negative.";
-
-    if (activityDateOnly < destStartOnly || activityDateOnly > destEndOnly) {
-      newErrors.date = "Activity date must be within destination dates.";
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validate()) return;
-    setIsLoading(true);
-    setApiError("");
-    try {
-      const data: CreateActivityRequest = {
-        name: form.name,
-        location: form.location,
-        description: form.description,
-        date: form.date,
-        estimatedCost: Number(form.estimatedCost) || 0,
-        status: form.status,
-        destinationId,
-      };
-      const activity = await activityApiService.createActivity(data);
-      onCreated(activity);
-      onClose();
-      setForm({
-        name: "",
-        location: "",
-        description: "",
-        date: "",
-        estimatedCost: "",
-        status: "Planned",
-      });
-    } catch (err: any) {
-      setApiError(err.response?.data || "Failed to create activity.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { form, errors, apiError, isLoading, handleChange, handleSubmit } =
+    useActivityForm({
+      initialState: defaultInitialState,
+      remainingBudget,
+      destStartDate,
+      destEndDate,
+      onClose,
+      onSubmitSuccess: onCreated,
+      mode: "create",
+      destinationId: destinationId,
+    });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Add Activity">
@@ -191,7 +111,7 @@ const CreateActivityModal = ({
             Cancel
           </button>
           <button
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(0)}
             disabled={isLoading}
             className="flex-1 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600
               text-white text-sm font-medium transition-colors

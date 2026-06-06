@@ -168,6 +168,10 @@ namespace TripService.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("PlannedBudget")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");

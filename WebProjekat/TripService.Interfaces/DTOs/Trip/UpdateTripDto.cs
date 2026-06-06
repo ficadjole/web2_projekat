@@ -16,5 +16,7 @@ namespace TripService.Interfaces.DTOs.Trip
         public DateTime EndDate { get; set; }
         [DataMember]
         public decimal PlannedBudget { get; set; }
+        [DataMember]
+        public string Notes { get; set; } = string.Empty;
     }
 }

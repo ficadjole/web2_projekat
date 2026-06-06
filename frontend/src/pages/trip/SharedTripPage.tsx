@@ -1,135 +1,21 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import type { SharedTripResponse } from "../../dtos/SharedTripResponse";
-import { tripShareApiService } from "../../api_services/tripShare/TripShareApiService";
 import { DestinationCard } from "../../components/trips/details/DestinationCard";
-import { useAuth } from "../../hooks/auth/useAuthHook";
 import { CreateDestinationModal } from "../../components/destinations/CreateDestinationModal";
-import type { Destination } from "../../models/tripService/Destination";
-import type { Activity } from "../../models/tripService/Activity";
+import { useSharedTrip } from "../../hooks/trip/useSharedTrip";
 
 export function SharedTripPage() {
-  const { token } = useParams<{ token: string }>();
-  const [data, setData] = useState<SharedTripResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isDestinationModalOpen, setIsDestinationModalOpen] = useState(false);
-  const [error, setError] = useState("");
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (!token) return;
-
-    tripShareApiService
-      .getSharedTrip(token)
-      .then(setData)
-      .catch((err) =>
-        setError(err.response?.data || "Invalid or expired link."),
-      )
-      .finally(() => setIsLoading(false));
-  }, [token]);
-
-  useEffect(() => {
-    if (data && data.accessType === "Edit" && !user) {
-      navigate("/login", { state: { from: location.pathname } });
-    }
-  }, [data, user, navigate, location.pathname]);
-
-  const handleDestinationCreated = (destination: Destination) => {
-    setData((prevData) => {
-      if (!prevData) return prevData;
-
-      return {
-        ...prevData,
-        trip: {
-          ...prevData.trip,
-          destinations: [
-            ...(prevData.trip.destinations ?? []),
-            { ...destination, activities: [] },
-          ],
-        },
-      };
-    });
-  };
-
-  const handleDestinationUpdated = (updatedDest: Destination) => {
-    if (!data) return;
-    setData({
-      ...data,
-      trip: {
-        ...data.trip,
-        destinations: data.trip.destinations.map((d) =>
-          d.id === updatedDest.id ? updatedDest : d,
-        ),
-      },
-    });
-  };
-
-  const handleDestinationDeleted = (id: string) => {
-    if (!data) return;
-    setData({
-      ...data,
-      trip: {
-        ...data.trip,
-        destinations: data.trip.destinations.filter((d) => d.id !== id),
-      },
-    });
-  };
-
-  const handleActivityUpdated = (destId: string, updatedActivity: Activity) => {
-    if (!data) return;
-    setData({
-      ...data,
-      trip: {
-        ...data.trip,
-        destinations: data.trip.destinations.map((d) => {
-          if (d.id !== destId) return d;
-          return {
-            ...d,
-            activities: d.activities.map((a) =>
-              a.id === updatedActivity.id ? updatedActivity : a,
-            ),
-          };
-        }),
-      },
-    });
-  };
-
-  const handleActivityCreated = (destId: string, newActivity: Activity) => {
-    if (!data) return;
-
-    setData({
-      ...data,
-      trip: {
-        ...data.trip,
-        destinations: data.trip.destinations.map((d) => {
-          if (d.id !== destId) return d;
-          return {
-            ...d,
-            activities: [...(d.activities || []), newActivity],
-          };
-        }),
-      },
-    });
-  };
-
-  const handleActivityDeleted = (destId: string, activityId: string) => {
-    if (!data) return;
-    setData({
-      ...data,
-      trip: {
-        ...data.trip,
-        destinations: data.trip.destinations.map((d) => {
-          if (d.id !== destId) return d;
-          return {
-            ...d,
-            activities: d.activities.filter((a) => a.id !== activityId),
-          };
-        }),
-      },
-    });
-  };
+  const {
+    data,
+    isLoading,
+    error,
+    isDestinationModalOpen,
+    setIsDestinationModalOpen,
+    handleDestinationCreated,
+    handleDestinationDeleted,
+    handleDestinationUpdated,
+    handleActivityCreated,
+    handleActivityUpdated,
+    handleActivityDeleted,
+  } = useSharedTrip();
 
   if (isLoading)
     return (

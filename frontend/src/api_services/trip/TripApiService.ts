@@ -11,6 +11,11 @@ export const tripApiService: ITripApiService = {
     return response.data;
   },
 
+  getAllTripsAdmin: async (): Promise<Trip[]> => {
+    const response = await api.get<Trip[]>(`/api/Trip/all`);
+    return response.data;
+  },
+
   getTripById: async (id: string): Promise<Trip> => {
     const response = await api.get<Trip>(`/api/Trip/${id}`);
     return response.data;

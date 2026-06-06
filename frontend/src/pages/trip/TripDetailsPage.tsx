@@ -1,10 +1,3 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import type { TripDetails } from "../../models/tripService/TripDetails";
-import { tripApiService } from "../../api_services/trip/TripApiService";
-import type { Destination } from "../../models/tripService/Destination";
-import type { Activity } from "../../models/tripService/Activity";
-import type { Expense } from "../../models/tripService/Expense";
 import { Navbar } from "../../components/layout/Navbar";
 import { TripDetailHeader } from "../../components/trips/details/TripDetailHeader";
 import { DestinationCard } from "../../components/trips/details/DestinationCard";
@@ -13,153 +6,29 @@ import { ExpenseSection } from "../../components/expenses/ExpenseSection";
 import { ChecklistSection } from "../../components/checklist/ChecklistSection";
 import { CreateDestinationModal } from "../../components/destinations/CreateDestinationModal";
 import { ShareTripModal } from "../../components/trips/share/ShareTripModal";
-import { recalculateFinances } from "../../helpers/recalculateFinances";
+import { useTripDetails } from "../../hooks/trip/useTripDetails";
 
 export function TripDetailsPage() {
-  const { id } = useParams<{ id: string }>();
-  const [trip, setTrip] = useState<TripDetails | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<
-    "overview" | "calendar" | "expenses" | "checklist"
-  >("overview");
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-
-  const [isDestinationModalOpen, setIsDestinationModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-    tripApiService
-      .getTripWithDetails(id)
-      .then(setTrip)
-      .catch((err) => setError(err.response?.data || "Failed to load trip."))
-      .finally(() => setIsLoading(false));
-  }, [id]);
-
-  const handleDestinationCreated = (destination: Destination) => {
-    setTrip((prev) =>
-      prev
-        ? {
-            ...prev,
-            destinations: [
-              ...(prev.destinations ?? []),
-              { ...destination, activities: [] },
-            ],
-          }
-        : prev,
-    );
-  };
-
-  const handleDestinationUpdated = (updatedDestination: Destination) => {
-    setTrip((prev) => {
-      if (!prev) return prev;
-      const updatedDestinations = prev.destinations.map((d) =>
-        d.id === updatedDestination.id
-          ? { ...updatedDestination, activities: d.activities }
-          : d,
-      );
-      return recalculateFinances({
-        ...prev,
-        destinations: updatedDestinations,
-      });
-    });
-  };
-
-  const handleActivityUpdated = (
-    destinationId: string,
-    updatedActivity: Activity,
-  ) => {
-    setTrip((prev) => {
-      if (!prev) return prev;
-      const updatedDestinations = prev.destinations.map((d) =>
-        d.id === destinationId
-          ? {
-              ...d,
-              activities: d.activities.map((a) =>
-                a.id === updatedActivity.id ? updatedActivity : a,
-              ),
-            }
-          : d,
-      );
-      return recalculateFinances({
-        ...prev,
-        destinations: updatedDestinations,
-      });
-    });
-  };
-
-  const handleActivityCreated = (destinationId: string, activity: Activity) => {
-    setTrip((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        destinations: prev.destinations.map((d) =>
-          d.id === destinationId
-            ? { ...d, activities: [...(d.activities ?? []), activity] }
-            : d,
-        ),
-      };
-    });
-  };
-
-  const handleExpenseAdded = (expense: Expense) => {
-    setTrip((prev) => {
-      if (!prev) return prev;
-      const newExpenses = [...(prev.expenses ?? []), expense];
-      const totalExpenses = newExpenses.reduce((sum, e) => sum + e.amount, 0);
-      return {
-        ...prev,
-        expenses: newExpenses,
-        totalExpenses,
-        remainingBudget: prev.plannedBudget - totalExpenses,
-      };
-    });
-  };
-
-  const handleExpenseDeleted = (expenseId: string) => {
-    setTrip((prev) => {
-      if (!prev) return prev;
-      const newExpenses = prev.expenses.filter((e) => e.id !== expenseId);
-      const totalExpenses = newExpenses.reduce((sum, e) => sum + e.amount, 0);
-      return {
-        ...prev,
-        expenses: newExpenses,
-        totalExpenses,
-        remainingBudget: prev.plannedBudget - totalExpenses,
-      };
-    });
-  };
-
-  const handleDestinationDeleted = (destinationId: string) => {
-    setTrip((prev) => {
-      if (!prev) return prev;
-      const updatedDestinations = prev.destinations.filter(
-        (d) => d.id !== destinationId,
-      );
-      return recalculateFinances({
-        ...prev,
-        destinations: updatedDestinations,
-      });
-    });
-  };
-
-  const handleActivityDeleted = (destinationId: string, activityId: string) => {
-    setTrip((prev) => {
-      if (!prev) return prev;
-      const updatedDestinations = prev.destinations.map((d) =>
-        d.id === destinationId
-          ? {
-              ...d,
-              activities: d.activities.filter((a) => a.id !== activityId),
-            }
-          : d,
-      );
-      return recalculateFinances({
-        ...prev,
-        destinations: updatedDestinations,
-      });
-    });
-  };
+  const {
+    id,
+    trip,
+    isLoading,
+    error,
+    activeTab,
+    setActiveTab,
+    isDestinationModalOpen,
+    setIsDestinationModalOpen,
+    isShareModalOpen,
+    setIsShareModalOpen,
+    handleDestinationCreated,
+    handleDestinationDeleted,
+    handleDestinationUpdated,
+    handleActivityCreated,
+    handleActivityUpdated,
+    handleActivityDeleted,
+    handleExpenseAdded,
+    handleExpenseDeleted,
+  } = useTripDetails();
 
   const tabs = [
     { key: "overview", label: "🗺️ Overview" },

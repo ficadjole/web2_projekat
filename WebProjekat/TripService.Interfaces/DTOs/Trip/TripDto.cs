@@ -13,6 +13,8 @@ namespace TripService.Interfaces.DTOs.Trip
         [DataMember]
         public string Description { get; set; } = string.Empty;
         [DataMember]
+        public string Notes { get; set; } = string.Empty;
+        [DataMember]
         public DateTime StartDate { get; set; }
         [DataMember]
         public DateTime EndDate { get; set; }

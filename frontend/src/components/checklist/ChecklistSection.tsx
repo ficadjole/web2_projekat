@@ -1,66 +1,20 @@
-import { useEffect, useState } from "react";
-import { checklistApiService } from "../../api_services/checklist/ChecklistApiService";
-import type { ChecklistItem } from "../../models/checklistService/ChecklistItem";
-import type { ChecklistDto } from "../../dtos/ChecklistDto";
 import type { ChecklistSectionProps } from "../../props/ChecklistSectionProps";
+import { useChecklist } from "../../hooks/checklist/useChecklist";
 
 export function ChecklistSection({ tripId }: ChecklistSectionProps) {
-  const [checklist, setChecklist] = useState<ChecklistDto | null>(null);
-  const [newItemName, setNewItemName] = useState("");
-  const [isAdding, setIsAdding] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    checklistApiService
-      .getByTripId(tripId)
-      .then(setChecklist)
-      .catch(() => setChecklist({ id: "", tripId, items: [] }))
-      .finally(() => setIsLoading(false));
-  }, [tripId]);
-
-  const handleAddItem = async () => {
-    if (!newItemName.trim()) return;
-    setIsAdding(true);
-    try {
-      const item = await checklistApiService.addItem({
-        name: newItemName,
-        tripId,
-      });
-      setChecklist((prev) =>
-        prev
-          ? { ...prev, items: [...prev.items, item] }
-          : { id: "", tripId, items: [item] },
-      );
-      setNewItemName("");
-    } finally {
-      setIsAdding(false);
-    }
-  };
-
-  const handleToggle = async (item: ChecklistItem) => {
-    const updated = await checklistApiService.toggleItem(tripId, item.id);
-    setChecklist((prev) =>
-      prev
-        ? {
-            ...prev,
-            items: prev.items.map((i) => (i.id === item.id ? updated : i)),
-          }
-        : prev,
-    );
-  };
-
-  const handleDelete = async (itemId: string) => {
-    await checklistApiService.deleteItem(tripId, itemId);
-    setChecklist((prev) =>
-      prev
-        ? { ...prev, items: prev.items.filter((i) => i.id !== itemId) }
-        : prev,
-    );
-  };
-
-  const completedCount =
-    checklist?.items.filter((i) => i.isChecked).length ?? 0;
-  const totalCount = checklist?.items.length ?? 0;
+  const {
+    items,
+    newItemName,
+    setNewItemName,
+    isAdding,
+    isLoading,
+    totalCount,
+    completedCount,
+    completionPercentage,
+    handleAddItem,
+    handleToggle,
+    handleDelete,
+  } = useChecklist(tripId);
 
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
@@ -75,7 +29,7 @@ export function ChecklistSection({ tripId }: ChecklistSectionProps) {
         </div>
         {totalCount > 0 && (
           <div className="text-xs font-medium text-blue-500">
-            {Math.round((completedCount / totalCount) * 100)}%
+            {completionPercentage}%
           </div>
         )}
       </div>
@@ -133,13 +87,13 @@ export function ChecklistSection({ tripId }: ChecklistSectionProps) {
             />
           </svg>
         </div>
-      ) : checklist?.items.length === 0 ? (
+      ) : items.length === 0 ? (
         <p className="text-sm text-slate-400 text-center py-4">
           No items yet — add things you need to pack!
         </p>
       ) : (
         <div className="flex flex-col gap-1">
-          {checklist?.items.map((item) => (
+          {items.map((item) => (
             <div
               key={item.id}
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl

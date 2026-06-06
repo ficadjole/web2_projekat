@@ -1,10 +1,10 @@
 import { useState } from "react";
 import type { TripShareResponse } from "../../../dtos/TripShareResponse";
-import { tripShareApiService } from "../../../api_services/tripShare/TripShareApiService";
 import { Modal } from "../../ui/Modal";
 import { ModalInput } from "../../ui/ModalInput";
 import QRCode from "react-qr-code";
 import type { ShareTripModalProps } from "../../../props/ShareTripModalProps";
+import { useServices } from "../../../contexts/ServiceContext";
 
 interface FormState {
   email: string;
@@ -21,6 +21,8 @@ export function ShareTripModal({
   onClose,
   tripId,
 }: ShareTripModalProps) {
+  const { tripShareApiService } = useServices();
+
   const [form, setForm] = useState<FormState>({
     email: "",
     accessType: "View",

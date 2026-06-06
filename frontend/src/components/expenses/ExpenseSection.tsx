@@ -20,6 +20,13 @@ export function ExpenseSection({
 
   const spentPercent = Math.min((totalExpenses / plannedBudget) * 100, 100);
 
+  const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
   const handleDelete = async () => {
     if (!deleteTarget) return;
     setIsDeleting(true);
@@ -106,31 +113,37 @@ export function ExpenseSection({
             {expenses.map((expense) => (
               <div
                 key={expense.id}
-                className="flex items-center justify-between px-3 py-2.5
-                  bg-slate-50 rounded-xl border border-slate-100 group"
+                className="flex items-center justify-between px-4 py-3
+    bg-slate-50 rounded-xl border border-slate-100 group hover:bg-slate-100/50 transition-all"
               >
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-3">
                   <span
-                    className={`text-xs px-2 py-0.5 rounded-full border font-medium
-                    ${CATEGORY_COLORS[expense.category] ?? CATEGORY_COLORS.Other}`}
+                    className={`text-xs px-2 py-0.5 rounded-full border font-medium shrink-0
+      ${CATEGORY_COLORS[expense.category] ?? CATEGORY_COLORS.Other}`}
                   >
                     {expense.category}
                   </span>
-                  <span className="text-sm font-medium text-slate-700">
-                    {expense.name}
-                  </span>
+                  <div className="flex flex-col simple-stack">
+                    <span className="text-sm font-semibold text-slate-800 leading-tight">
+                      {expense.name}
+                    </span>
+                    <span className="text-[11px] text-slate-400 font-medium mt-0.5">
+                      {formatDate(expense.createdAt)}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-slate-700">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-bold text-slate-800">
                     ${expense.amount.toLocaleString()}
                   </span>
+
                   <button
                     onClick={() => setDeleteTarget(expense.id)}
-                    className="p-1 rounded-lg text-slate-300 hover:text-red-400
-                      hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                    className="p-1.5 rounded-lg text-slate-500 hover:text-red-500
+        hover:bg-red-50 transition-all"
                   >
                     <svg
-                      className="w-3.5 h-3.5"
+                      className="w-4 h-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"

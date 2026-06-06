@@ -6,5 +6,6 @@ namespace TripService.Interfaces
     {
         Task<IEnumerable<Trip>> GetAllByUserIdAsync(Guid userId);
         Task<Trip?> GetByIdWithDetailsAsync(Guid id);
+        Task<IEnumerable<Trip>> GetAllAsync();
     }
 }

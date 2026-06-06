@@ -88,5 +88,18 @@ namespace WebApi.Controllers.TripShare
             return Ok("Share revoked successfully.");
         }
 
+        [HttpGet("{tripId}/report")]
+        [Authorize]
+        public async Task<IActionResult> GenerateReport(Guid tripId)
+        {
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var result = await proxy.GetTripShareProxy().GenerateTripReportAsync(tripId, userId);
+
+            if (result.IsFailure)
+                return BadRequest(result.Error!.Message);
+
+            return File(result.Value, "application/pdf", $"trip-report-{tripId}.pdf");
+        }
+
     }
 }

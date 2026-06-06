@@ -12,5 +12,7 @@ namespace TripService.Interfaces
         Task<Result<IEnumerable<TripDto>>> GetAllTripsByUserAsync(Guid userId);
         Task<Result<TripDto>> UpdateTripAsync(Guid id, UpdateTripDto dto, Guid userId);
         Task<Result> DeleteTripAsync(Guid id, Guid userId);
+
+        Task<Result<IEnumerable<TripDto>>> GetAllAsync();
     }
 }

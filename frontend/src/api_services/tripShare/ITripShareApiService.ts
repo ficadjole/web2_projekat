@@ -7,4 +7,5 @@ export interface ITripShareApiService {
   getSharedTrip(token: string): Promise<SharedTripResponse>;
   getSharesByTripId(tripId: string): Promise<TripShareResponse[]>;
   revokeShare(id: string): Promise<void>;
+  downloadReport(tripId: string): Promise<void>;
 }

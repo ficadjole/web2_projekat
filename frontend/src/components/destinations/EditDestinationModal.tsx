@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
 import { Modal } from "../ui/Modal";
 import { ModalInput } from "../ui/ModalInput";
-import type { UpdateDestinationRequest } from "../../dtos/UpdateDestinationRequest";
-import { destinationApiService } from "../../api_services/destination/DestinationApiService";
 import type { EditDestinationModalProps } from "../../props/EditDestinationModalProps";
+import { useDestinationForm } from "../../hooks/destination/useDestinationForm";
 
 const EditDestinationModal = ({
   isOpen,
@@ -13,87 +11,32 @@ const EditDestinationModal = ({
   tripEndDate,
   tripStartDate,
 }: EditDestinationModalProps) => {
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    notes: "",
-    location: "",
-    arrivingDate: "",
-    leavingDate: "",
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [apiError, setApiError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const currentDestinationState = {
+    name: destination?.name || "",
+    description: destination?.description || "",
+    notes: destination?.notes || "",
+    location: destination?.location || "",
+    arrivingDate: destination?.arrivingDate
+      ? destination.arrivingDate.split("T")[0]
+      : "",
+    leavingDate: destination?.leavingDate
+      ? destination.leavingDate.split("T")[0]
+      : "",
+  };
+
+  const { form, errors, apiError, isLoading, handleChange, handleSubmit } =
+    useDestinationForm({
+      initialState: currentDestinationState,
+      tripStartDate,
+      tripEndDate,
+      onClose,
+      onSubmitSuccess: onUpdated,
+      mode: "edit",
+      destinationId: destination?.id,
+    });
 
   const formattedMin = tripStartDate ? tripStartDate.split("T")[0] : "";
   const formattedMax = tripEndDate ? tripEndDate.split("T")[0] : "";
-
-  useEffect(() => {
-    if (destination) {
-      setForm({
-        name: destination.name,
-        description: destination.description,
-        notes: destination.notes ?? "",
-        location: destination.location,
-        arrivingDate: destination.arrivingDate.split("T")[0],
-        leavingDate: destination.leavingDate.split("T")[0],
-      });
-    }
-  }, [destination]);
-
-  const handleChange =
-    (field: string) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setForm((prev) => ({ ...prev, [field]: e.target.value }));
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    };
-
-  const validate = () => {
-    const newErrors: Record<string, string> = {};
-    if (!form.name.trim()) newErrors.name = "Name is required.";
-
-    if (!form.location.trim()) newErrors.location = "Location is required.";
-
-    if (!form.arrivingDate)
-      newErrors.arrivingDate = "Arriving date is required.";
-
-    if (!form.leavingDate) newErrors.leavingDate = "Leaving date is required.";
-    else if (form.leavingDate <= form.arrivingDate)
-      newErrors.leavingDate = "Leaving date must be after arriving date.";
-
-    if (form.arrivingDate < tripStartDate.split("T")[0]) {
-      newErrors.arrivingDate = "Arriving date cannot be before trip starts.";
-    }
-    if (form.leavingDate > tripEndDate.split("T")[0]) {
-      newErrors.leavingDate = "Leaving date cannot be after trip ends.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validate() || !destination) return;
-    setIsLoading(true);
-    setApiError("");
-    try {
-      const data: UpdateDestinationRequest = {
-        ...form,
-      };
-
-      const updated = await destinationApiService.updateDestination(
-        data,
-        destination.id,
-      );
-
-      onUpdated(updated);
-      onClose();
-    } catch (err: any) {
-      setApiError(err.response?.data || "Failed to update destination.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Destination">

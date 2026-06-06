@@ -1,14 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { tripApiService } from "../../api_services/trip/TripApiService";
 import { EditTripModal } from "./EditTripModal";
 import { ConfirmDeleteModal } from "../ui/ConfirmDeleteModal";
 import type { TripCardProps } from "../../props/TripCardProps";
-
-
+import { useServices } from "../../contexts/ServiceContext";
 
 export function TripCard({ trip, onUpdated, onDeleted }: TripCardProps) {
   const navigate = useNavigate();
+  const { tripApiService } = useServices();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);

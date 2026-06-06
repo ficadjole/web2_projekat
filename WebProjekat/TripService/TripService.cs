@@ -29,6 +29,7 @@ namespace TripService
         private readonly IActivityBusinessService _activityService;
         private readonly IExpenseBusinessService _expenseService;
         private readonly ITripShareBusinessService _tripShareService;
+        private readonly IPdfService _pdfService;
 
         public TripService(StatelessServiceContext context)
             : base(context)
@@ -57,6 +58,7 @@ namespace TripService
             services.AddScoped<IActivityBusinessService, ActivityBusinessService>();
             services.AddScoped<IExpenseBusinessService, ExpenseBusinessService>();
             services.AddScoped<ITripShareBusinessService, TripShareBusinessService>();
+            services.AddScoped<IPdfService, PdfService>();
 
             _serviceProvider = services.BuildServiceProvider();
 
@@ -65,6 +67,7 @@ namespace TripService
             _activityService = _serviceProvider.GetRequiredService<IActivityBusinessService>();
             _expenseService = _serviceProvider.GetRequiredService<IExpenseBusinessService>();
             _tripShareService = _serviceProvider.GetRequiredService<ITripShareBusinessService>();
+            _pdfService = _serviceProvider.GetRequiredService<IPdfService>();
         }
 
         /// <summary>
@@ -115,6 +118,8 @@ namespace TripService
 
         public Task<Result> DeleteTripAsync(Guid id, Guid userId)
             => _tripService.DeleteAsync(id, userId);
+
+        public Task<Result<IEnumerable<TripDto>>> GetAllAsync() => _tripService.GetAllAsync();
 
         #endregion Trip
 
@@ -193,6 +198,8 @@ namespace TripService
 
         public Task<Result> RevokeShareAsync(Guid id, Guid userId)
             => _tripShareService.RevokeShareAsync(id, userId);
+
+        public Task<Result<byte[]>> GenerateTripReportAsync(Guid tripId, Guid userId) => _pdfService.GenerateTripReportAsync(tripId, userId);
 
         #endregion TripShare
     }

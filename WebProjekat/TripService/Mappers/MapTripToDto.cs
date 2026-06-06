@@ -15,7 +15,8 @@ namespace TripService.Mappers
             StartDate = trip.StartDate,
             EndDate = trip.EndDate,
             PlannedBudget = trip.PlannedBudget,
-            UserId = trip.UserId
+            UserId = trip.UserId,
+            Notes = trip.Notes
         };
 
         public static TripDetailsDto MapToDetailsDto(Trip trip) => new()

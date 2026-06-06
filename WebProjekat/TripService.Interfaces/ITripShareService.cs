@@ -10,5 +10,6 @@ namespace TripService.Interfaces
         Task<Result<SharedTripDto>> GetSharedTripAsync(string token);
         Task<Result<IEnumerable<TripShareDto>>> GetSharesByTripIdAsync(Guid tripId, Guid userId);
         Task<Result> RevokeShareAsync(Guid id, Guid userId);
+        Task<Result<byte[]>> GenerateTripReportAsync(Guid tripId, Guid userId);
     }
 }

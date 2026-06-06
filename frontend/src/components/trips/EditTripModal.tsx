@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { tripApiService } from "../../api_services/trip/TripApiService";
 import { Modal } from "../ui/Modal";
 import { ModalInput } from "../ui/ModalInput";
 import type { EditTripModalProps } from "../../props/EditTripModalProps";
+import { useServices } from "../../contexts/ServiceContext";
 
 export function EditTripModal({
   isOpen,
@@ -21,13 +21,14 @@ export function EditTripModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { tripApiService } = useServices();
 
   useEffect(() => {
     if (trip) {
       setForm({
         name: trip.name,
         description: trip.description,
-        notes: trip.notes ?? "",
+        notes: trip.notes,
         startDate: trip.startDate.split("T")[0],
         endDate: trip.endDate.split("T")[0],
         plannedBudget: trip.plannedBudget.toString(),

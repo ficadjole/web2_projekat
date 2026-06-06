@@ -1,26 +1,16 @@
-import { useState } from "react";
-import { destinationApiService } from "../../api_services/destination/DestinationApiService";
-import type { CreateDestinationData } from "../../dtos/CreateDestinationData";
 import { Modal } from "../ui/Modal";
 import { ModalInput } from "../ui/ModalInput";
 import type { CreateDestinationModalProps } from "../../props/CreateDestinationModalProps";
+import { useDestinationForm } from "../../hooks/destination/useDestinationForm";
 
-interface FormState {
-  name: string;
-  description: string;
-  notes: string;
-  location: string;
-  arrivingDate: string;
-  leavingDate: string;
-}
-
-interface FormErrors {
-  name?: string;
-  description?: string;
-  location?: string;
-  arrivingDate?: string;
-  leavingDate?: string;
-}
+const defaultInitialState = {
+  name: "",
+  description: "",
+  notes: "",
+  location: "",
+  arrivingDate: "",
+  leavingDate: "",
+};
 
 export function CreateDestinationModal({
   isOpen,
@@ -30,83 +20,19 @@ export function CreateDestinationModal({
   tripEndDate,
   tripStartDate,
 }: CreateDestinationModalProps) {
-  const [form, setForm] = useState<FormState>({
-    name: "",
-    description: "",
-    notes: "",
-    location: "",
-    arrivingDate: "",
-    leavingDate: "",
-  });
-
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [apiError, setApiError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { form, errors, apiError, isLoading, handleChange, handleSubmit } =
+    useDestinationForm({
+      initialState: defaultInitialState,
+      tripStartDate,
+      tripEndDate,
+      onClose,
+      onSubmitSuccess: onCreated,
+      mode: "create",
+      tripId,
+    });
 
   const formattedMin = tripStartDate ? tripStartDate.split("T")[0] : "";
   const formattedMax = tripEndDate ? tripEndDate.split("T")[0] : "";
-
-  const handleChange =
-    (field: keyof FormState) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setForm((prev) => ({ ...prev, [field]: e.target.value }));
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    };
-
-  const validate = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!form.name.trim()) newErrors.name = "Name is required.";
-
-    if (!form.description.trim())
-      newErrors.description = "Description is required.";
-
-    if (!form.location.trim()) newErrors.location = "Location is required.";
-
-    if (!form.arrivingDate)
-      newErrors.arrivingDate = "Arriving date is required.";
-
-    if (!form.leavingDate) newErrors.leavingDate = "Leaving date is required.";
-    else if (form.arrivingDate && form.leavingDate <= form.arrivingDate)
-      newErrors.leavingDate = "Leaving date must be after arriving date.";
-
-    if (form.arrivingDate < tripStartDate.split("T")[0]) {
-      newErrors.arrivingDate = "Arriving date cannot be before trip starts.";
-    }
-    if (form.leavingDate > tripEndDate.split("T")[0]) {
-      newErrors.leavingDate = "Leaving date cannot be after trip ends.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validate()) return;
-    setIsLoading(true);
-    setApiError("");
-    try {
-      const data: CreateDestinationData = {
-        ...form,
-        tripId,
-      };
-      const destination = await destinationApiService.createDestination(data);
-      onCreated(destination);
-      onClose();
-      setForm({
-        name: "",
-        description: "",
-        notes: "",
-        location: "",
-        arrivingDate: "",
-        leavingDate: "",
-      });
-    } catch (err: any) {
-      setApiError(err.response?.data || "Failed to create destination.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Add Destination">

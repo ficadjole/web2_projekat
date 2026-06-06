@@ -1,16 +1,16 @@
 import { useState } from "react";
 import type { CreateTripRequest } from "../../dtos/CreateTripRequest";
-import { tripApiService } from "../../api_services/trip/TripApiService";
 import { Modal } from "../ui/Modal";
 import { ModalInput } from "../ui/ModalInput";
 import type { CreateTripModalProps } from "../../props/CreateTripModalProps";
-
+import { useServices } from "../../contexts/ServiceContext";
 
 interface FormState {
   name: string;
   description: string;
   startDate: string;
   endDate: string;
+  notes: string;
   plannedBudget: string;
 }
 
@@ -33,11 +33,13 @@ export function CreateTripModal({
     startDate: "",
     endDate: "",
     plannedBudget: "",
+    notes: "",
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const {tripApiService} = useServices();
 
   const handleChange =
     (field: keyof FormState) =>
@@ -88,6 +90,7 @@ export function CreateTripModal({
         startDate: "",
         endDate: "",
         plannedBudget: "",
+        notes: "",
       });
     } catch (err: any) {
       setApiError(err.response?.data || "Failed to create trip.");
@@ -122,6 +125,14 @@ export function CreateTripModal({
           onChange={handleChange("description")}
           error={errors.description}
           placeholder="A wonderful journey through..."
+          textarea
+        />
+
+        <ModalInput
+          label="Notes (optional)"
+          value={form.notes}
+          onChange={handleChange("notes")}
+          placeholder="General notes..."
           textarea
         />
 

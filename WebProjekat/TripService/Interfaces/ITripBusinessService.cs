@@ -9,6 +9,8 @@ namespace TripService.Interfaces
         Task<Result<TripDto>> GetByIdAsync(Guid id, Guid userId);
         Task<Result<TripDetailsDto>> GetWithDetailsAsync(Guid id, Guid userId);
         Task<Result<IEnumerable<TripDto>>> GetAllByUserAsync(Guid userId);
+
+        Task<Result<IEnumerable<TripDto>>> GetAllAsync();
         Task<Result<TripDto>> UpdateAsync(Guid id, UpdateTripDto dto, Guid userId);
         Task<Result> DeleteAsync(Guid id, Guid userId);
     }

@@ -1,9 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import type { TripDetailHeaderProps } from "../../../props/TripDetailHeaderProps";
+import { useState } from "react";
+import { useServices } from "../../../contexts/ServiceContext";
 
 export function TripDetailHeader({ trip, onShare }: TripDetailHeaderProps) {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const { tripShareApiService } = useServices();
   const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString("en-GB", {
       day: "numeric",
@@ -11,11 +14,24 @@ export function TripDetailHeader({ trip, onShare }: TripDetailHeaderProps) {
       year: "numeric",
     });
 
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleDownload = async () => {
+    setIsGenerating(true);
+    try {
+      await tripShareApiService.downloadReport(trip.id);
+    } catch (err) {
+      console.error("Failed to generate report.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-6">
       <div className="flex items-start justify-between mb-4">
         <button
-          onClick={() => navigate("/home")}
+          onClick={() => navigate(location.state?.from || "/home")}
           className="flex items-center gap-1.5 text-sm text-slate-400
             hover:text-slate-600 transition-colors"
         >
@@ -61,6 +77,55 @@ export function TripDetailHeader({ trip, onShare }: TripDetailHeaderProps) {
                 />
               </svg>
               Share
+            </button>
+            <button
+              onClick={handleDownload}
+              disabled={isGenerating}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl
+        border border-slate-200 text-slate-600 hover:bg-slate-50
+        text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              {isGenerating ? (
+                <>
+                  <svg
+                    className="animate-spin w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                    />
+                  </svg>
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                  Download PDF
+                </>
+              )}
             </button>
           </div>
           <p className="text-slate-500 ml-9">{trip.description}</p>

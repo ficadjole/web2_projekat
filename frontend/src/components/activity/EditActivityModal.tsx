@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { Modal } from "../ui/Modal";
 import { ModalInput } from "../ui/ModalInput";
-import { activityApiService } from "../../api_services/acitivity/ActivityApiService";
-import type { UpdateActivityRequest } from "../../dtos/UpdateActivityRequest";
 import type { EditActivityModalProps } from "../../props/EditActivityModalProps";
+import { useActivityForm } from "../../hooks/activity/useActivityForm";
 
 export function EditActivityModal({
   isOpen,
@@ -14,89 +12,26 @@ export function EditActivityModal({
   destStartDate,
   remainingBudget,
 }: EditActivityModalProps) {
-  const [form, setForm] = useState({
-    name: "",
-    location: "",
-    description: "",
-    date: "",
-    estimatedCost: "",
-    status: "Planned",
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [apiError, setApiError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (activity) {
-      setForm({
-        name: activity.name,
-        location: activity.location,
-        description: activity.description,
-        date: activity.date,
-        estimatedCost: activity.estimatedCost.toString(),
-        status: activity.status,
-      });
-    }
-  }, [activity]);
-
-  const handleChange =
-    (field: string) =>
-    (
-      e: React.ChangeEvent<
-        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-      >,
-    ) => {
-      setForm((prev) => ({ ...prev, [field]: e.target.value }));
-    };
-
-  const validate = () => {
-    const newErrors: Record<string, string> = {};
-    const activityDateOnly = form.date.split("T")[0];
-    const destStartOnly = destStartDate.split("T")[0];
-    const destEndOnly = destEndDate.split("T")[0];
-    const newCost = Number(form.estimatedCost) || 0;
-    const oldCost = activity ? activity.estimatedCost : 0;
-    const costDifference = newCost - oldCost;
-
-    if (activityDateOnly < destStartOnly || activityDateOnly > destEndOnly) {
-      newErrors.date = "Activity date must be within destination dates.";
-    }
-
-    if (costDifference > remainingBudget) {
-      newErrors.estimatedCost = `Cost exceeds remaining budget by $${costDifference - remainingBudget}.`;
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const currentActivityState = {
+    name: activity?.name || "",
+    location: activity?.location || "",
+    description: activity?.description || "",
+    date: activity?.date ? activity.date.substring(0, 16) : "",
+    estimatedCost: activity?.estimatedCost?.toString() || "",
+    status: activity?.status || "Planned",
   };
 
-  const handleSubmit = async () => {
-    if (!validate() || !activity) return;
-    setIsLoading(true);
-    setApiError("");
-    try {
-      const data: UpdateActivityRequest = {
-        name: form.name,
-        location: form.location,
-        description: form.description,
-        date: form.date,
-        estimatedCost: form.estimatedCost,
-        status: form.status,
-      };
-
-      const updated = await activityApiService.updateActivity(
-        data,
-        activity.id,
-      );
-
-      onUpdated(updated);
-      onClose();
-    } catch (err: any) {
-      setApiError(err.response?.data || "Failed to update activity.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  const { form, errors, apiError, isLoading, handleChange, handleSubmit } =
+    useActivityForm({
+      initialState: currentActivityState,
+      remainingBudget,
+      destStartDate,
+      destEndDate,
+      onClose,
+      onSubmitSuccess: onUpdated,
+      mode: "edit",
+      activityId: activity?.id,
+    });
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Activity">
       <div className="flex flex-col gap-4">
@@ -162,7 +97,7 @@ export function EditActivityModal({
             Cancel
           </button>
           <button
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(activity?.estimatedCost || 0)}
             disabled={isLoading}
             className="flex-1 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600
               text-white text-sm font-medium transition-colors disabled:opacity-50"

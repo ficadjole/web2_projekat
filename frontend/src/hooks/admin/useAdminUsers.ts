@@ -38,5 +38,12 @@ export const useAdminUsers = () => {
     setUsers((prev) => prev.filter((u) => u.id !== id));
   };
 
-  return { users, isLoading, error, updateUser, updateRole, deleteUser };
+  return {
+    users,
+    isLoading,
+    error,
+    updateUser,
+    updateRole,
+    deleteUser,
+  };
 };

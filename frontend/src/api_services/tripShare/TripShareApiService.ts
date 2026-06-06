@@ -30,4 +30,20 @@ export const tripShareApiService: ITripShareApiService = {
   revokeShare: async (id: string): Promise<void> => {
     await api.delete(`/api/TripShare/${id}`);
   },
+
+  downloadReport: async (tripId: string): Promise<void> => {
+    const response = await api.get(`/api/TripShare/${tripId}/report`, {
+      responseType: "blob",
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `trip-report-${tripId}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  },
 };

@@ -19,7 +19,7 @@ namespace TripService.Services
         public async Task<Result<TripDto>> CreateAsync(CreateTripDto dto, Guid userId)
         {
             var result = Trip.Create(dto.Name, dto.Description, dto.StartDate,
-                                     dto.EndDate, dto.PlannedBudget, userId);
+                                     dto.EndDate, dto.PlannedBudget, userId,dto.Notes);
             if (result.IsFailure)
                 return Result<TripDto>.Failure(result.Error!.Message, result.Error.Type);
 
@@ -95,6 +95,7 @@ namespace TripService.Services
             trip.StartDate = dto.StartDate;
             trip.EndDate = dto.EndDate;
             trip.PlannedBudget = dto.PlannedBudget;
+            trip.Notes = dto.Notes;
 
             await _tripRepository.UpdateAsync(trip);
             return Result<TripDto>.Success(MapTripToDto.MapToDto(trip));
@@ -113,5 +114,14 @@ namespace TripService.Services
             return Result.Success();
         }
 
+        public async Task<Result<IEnumerable<TripDto>>> GetAllAsync()
+        {
+            var trips = await _tripRepository.GetAllAsync();
+
+            if(trips is null)
+                return Result<IEnumerable<TripDto>>.Failure("No trips found.", ErrorType.NotFound);
+
+            return Result<IEnumerable<TripDto>>.Success(trips.Select(MapTripToDto.MapToDto));
+        }
     }
 }

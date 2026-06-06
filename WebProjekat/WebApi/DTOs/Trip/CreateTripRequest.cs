@@ -15,5 +15,7 @@ namespace WebApi.DTOs.Trip
         public DateTime EndDate { get; set; }
         [FromForm(Name = "plannedBudget")]
         public decimal PlannedBudget { get; set; }
+        [FromForm(Name = "notes")]
+        public string Notes { get; set; } = string.Empty;
     }
 }
