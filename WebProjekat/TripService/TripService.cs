@@ -104,11 +104,11 @@ namespace TripService
         public Task<Result<TripDto>> CreateTripAsync(CreateTripDto dto, Guid userId)
             => _tripService.CreateAsync(dto, userId);
 
-        public Task<Result<TripDto>> GetTripByIdAsync(Guid id, Guid userId)
-            => _tripService.GetByIdAsync(id, userId);
+        public Task<Result<TripDto>> GetTripByIdAsync(Guid id, Guid userId, bool isAdmin)
+            => _tripService.GetByIdAsync(id, userId, isAdmin);
 
-        public Task<Result<TripDetailsDto>> GetTripWithDetailsAsync(Guid id, Guid userId)
-            => _tripService.GetWithDetailsAsync(id, userId);
+        public Task<Result<TripDetailsDto>> GetTripWithDetailsAsync(Guid id, Guid userId, bool isAdmin)
+            => _tripService.GetWithDetailsAsync(id, userId, isAdmin);
 
         public Task<Result<IEnumerable<TripDto>>> GetAllTripsByUserAsync(Guid userId)
             => _tripService.GetAllByUserAsync(userId);
@@ -116,10 +116,12 @@ namespace TripService
         public Task<Result<TripDto>> UpdateTripAsync(Guid id, UpdateTripDto dto, Guid userId)
             => _tripService.UpdateAsync(id, dto, userId);
 
-        public Task<Result> DeleteTripAsync(Guid id, Guid userId)
-            => _tripService.DeleteAsync(id, userId);
+        public Task<Result> DeleteTripAsync(Guid id, Guid userId, bool isAdmin)
+            => _tripService.DeleteAsync(id, userId,isAdmin);
 
         public Task<Result<IEnumerable<TripDto>>> GetAllAsync() => _tripService.GetAllAsync();
+
+        public Task<Result> DeleteAllByUser(Guid userId, bool isAdmin) => _tripService.DeleteAllByUser(userId, isAdmin);
 
         #endregion Trip
 

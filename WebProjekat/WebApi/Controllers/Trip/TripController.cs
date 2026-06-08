@@ -41,8 +41,9 @@ namespace WebApi.Controllers.Trip
         public async Task<IActionResult> GetById(Guid id)
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var isAdmin = User.IsInRole("Admin");
 
-            var result = await proxy.GetTripProxy().GetTripByIdAsync(id, userId);
+            var result = await proxy.GetTripProxy().GetTripByIdAsync(id, userId, isAdmin);
 
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);
@@ -69,8 +70,9 @@ namespace WebApi.Controllers.Trip
         public async Task<IActionResult> GetWithDetails(Guid id)
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var isAdmin = User.IsInRole("Admin");
 
-            var result = await proxy.GetTripProxy().GetTripWithDetailsAsync(id, userId);
+            var result = await proxy.GetTripProxy().GetTripWithDetailsAsync(id, userId, isAdmin);
 
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);
@@ -113,8 +115,9 @@ namespace WebApi.Controllers.Trip
         public async Task<IActionResult> Delete(Guid id)
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var isAdmin = User.IsInRole("Admin");
 
-            var result = await proxy.GetTripProxy().DeleteTripAsync(id, userId);
+            var result = await proxy.GetTripProxy().DeleteTripAsync(id, userId, isAdmin);
 
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);

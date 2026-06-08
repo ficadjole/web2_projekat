@@ -46,17 +46,6 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div
-              className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400
-              flex items-center justify-center text-white text-sm font-semibold"
-            >
-              {user?.name?.charAt(0).toUpperCase()}
-            </div>
-            <span className="text-sm font-medium text-slate-700 hidden sm:block">
-              {user?.name}
-            </span>
-          </div>
           <button
             onClick={handleLogout}
             className="px-3 py-2 rounded-lg text-sm text-slate-500

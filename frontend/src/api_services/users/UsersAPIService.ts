@@ -26,4 +26,8 @@ export const usersApi: IUsersAPIService = {
   deleteUser: async function (id: string): Promise<void> {
     await api.delete(`/api/User/${id}`);
   },
+  getUserById: async (id: string): Promise<User> => {
+    const response = await api.get<User>(`/api/User/${id}`);
+    return response.data;
+  },
 };

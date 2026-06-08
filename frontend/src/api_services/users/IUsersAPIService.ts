@@ -7,4 +7,5 @@ export interface IUsersAPIService {
   updateUser(id: string, data: UpdateUserRequest): Promise<User>;
   updateRole(id: string, data: UpdateRoleRequest): Promise<User>;
   deleteUser(id: string): Promise<void>;
+  getUserById(id: string): Promise<User>;
 }

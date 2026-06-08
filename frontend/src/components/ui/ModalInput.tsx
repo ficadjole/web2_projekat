@@ -1,16 +1,4 @@
-interface ModalInputProps {
-  label: string;
-  type?: string;
-  value: string;
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-  error?: string;
-  placeholder?: string;
-  textarea?: boolean;
-  min?: string;
-  max?: string;
-}
+import type { ModalInputProps } from "../../props/modalProps/ModalInputProps";
 
 export function ModalInput({
   label,

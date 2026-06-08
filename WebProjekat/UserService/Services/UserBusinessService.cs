@@ -1,4 +1,6 @@
 ﻿using Common.Enums;
+using Microsoft.ServiceFabric.Services.Remoting.Client;
+using TripService.Interfaces;
 using UserService.DTOs;
 using UserService.Interfaces;
 using UserService.Interfaces.DTOs;
@@ -22,6 +24,14 @@ namespace UserService.Services
                     return Result<string>.Failure($"User with ID {userId} does not exist", ErrorType.NotFound);
 
                 }
+
+                var proxyTrip = ServiceProxy.Create<ITripService>(new Uri("fabric:/WebProjekat/TripService"));
+
+                var deleteTripsResult = await proxyTrip.DeleteAllByUser(userId,true);
+
+                if (deleteTripsResult.IsFailure)
+                    return Result<string>.Failure("Failed to delete user's trips. User deletion aborted.", ErrorType.Unexpected);
+
 
                 await userRepository.DeleteAsync(userId);
 

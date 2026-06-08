@@ -25,7 +25,7 @@ namespace WebApi.Controllers
 
             }
 
-            var loginResult = userServiceProxy.GetUserProxy().LoginAsync(request.Email, request.Password).GetAwaiter().GetResult();
+            var loginResult = await userServiceProxy.GetUserProxy().LoginAsync(request.Email, request.Password);
 
             if (!loginResult.IsSuccess)
             {
@@ -48,7 +48,7 @@ namespace WebApi.Controllers
             }
 
 
-            var registrationResult = userServiceProxy.GetUserProxy().RegisterAsync(request.Name, request.Email, request.Password, request.Role).GetAwaiter().GetResult();
+            var registrationResult = await userServiceProxy.GetUserProxy().RegisterAsync(request.Name, request.Email, request.Password, request.Role);
 
             if (!registrationResult.IsSuccess)
             {

@@ -18,13 +18,14 @@ namespace Common.Services
             _options = options.Value;
         }
 
-        public Result<string> GenerateToken(Guid userId, string email, string role)
+        public Result<string> GenerateToken(Guid userId, string email, string role,string name)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
 
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim(ClaimTypes.Name,name),
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Role, role)
             };

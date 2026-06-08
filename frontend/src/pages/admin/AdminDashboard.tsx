@@ -31,7 +31,9 @@ export function AdminDashboardPage() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Admin Panel</h1>
+            <h1 className="text-2xl font-bold text-slate-800">
+              Admin Dashboard
+            </h1>
             <p className="text-slate-500 text-sm mt-1">
               User and trip managament
             </p>
@@ -46,7 +48,7 @@ export function AdminDashboardPage() {
                   : "text-slate-600 hover:text-slate-800"
               }`}
             >
-              Korisnici ({users.length})
+              Users ({users.length})
             </button>
             <button
               onClick={() => setActiveTab("trips")}
@@ -56,7 +58,7 @@ export function AdminDashboardPage() {
                   : "text-slate-600 hover:text-slate-800"
               }`}
             >
-              Sva Putovanja ({trips.length})
+              All Trips ({trips.length})
             </button>
           </div>
         </div>
@@ -64,7 +66,7 @@ export function AdminDashboardPage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6 max-w-xl">
           <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-5 py-4">
             <p className="text-xs text-slate-500 uppercase tracking-wide font-medium">
-              Ukupno Korisnika
+              Total Users
             </p>
             <p className="text-2xl font-bold text-slate-800 mt-1">
               {users.length}
@@ -72,7 +74,7 @@ export function AdminDashboardPage() {
           </div>
           <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-5 py-4">
             <p className="text-xs text-slate-500 uppercase tracking-wide font-medium">
-              Admini
+              Admins
             </p>
             <p className="text-2xl font-bold text-slate-800 mt-1">
               {users.filter((u) => u.role === "Admin").length}
@@ -80,7 +82,7 @@ export function AdminDashboardPage() {
           </div>
           <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-5 py-4 col-span-2 sm:col-span-1">
             <p className="text-xs text-slate-500 uppercase tracking-wide font-medium">
-              Ukupno Putovanja
+              Total Trips
             </p>
             <p className="text-2xl font-bold text-slate-800 mt-1">
               {trips.length}
@@ -117,7 +119,7 @@ export function AdminDashboardPage() {
                     d="M4 12a8 8 0 018-8v8z"
                   />
                 </svg>
-                <span className="text-sm">Učitavanje korisnika...</span>
+                <span className="text-sm">Loading users...</span>
               </div>
             </div>
           ) : (
@@ -150,7 +152,7 @@ export function AdminDashboardPage() {
                   d="M4 12a8 8 0 018-8v8z"
                 />
               </svg>
-              <span className="text-sm">Učitavanje svih putovanja...</span>
+              <span className="text-sm">Loading all trips...</span>
             </div>
           </div>
         ) : (

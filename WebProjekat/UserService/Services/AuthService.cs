@@ -43,7 +43,7 @@ namespace UserService.Services
                     return Result<AuthResponseDto>.Failure("Invalid email or password.", ErrorType.Authentication);
                 }
 
-                var token = _jwtService.GenerateToken(user.Id, user.Email, user.Role.ToString());
+                var token = _jwtService.GenerateToken(user.Id, user.Email, user.Role.ToString(),user.Name);
 
                 _logger.LogInformation("User authenticated successfully: {Email}", email);
 
@@ -76,7 +76,7 @@ namespace UserService.Services
 
                 _logger.LogInformation("User registered successfully: {Email}", email);
 
-                var token = _jwtService.GenerateToken(user.Id, user.Email, user.Role.ToString());
+                var token = _jwtService.GenerateToken(user.Id, user.Email, user.Role.ToString(), user.Name);
 
                 if (token.IsFailure)
                 {

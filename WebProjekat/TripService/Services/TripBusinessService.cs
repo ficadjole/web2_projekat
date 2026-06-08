@@ -1,4 +1,7 @@
-﻿using Common.Enums;
+﻿using CheckListService.Interfaces;
+using Common.Enums;
+using Microsoft.ServiceFabric.Services.Client;
+using Microsoft.ServiceFabric.Services.Remoting.Client;
 using TripService.Interfaces;
 using TripService.Interfaces.DTOs.Trip;
 using TripService.Mappers;
@@ -27,25 +30,25 @@ namespace TripService.Services
             return Result<TripDto>.Success(MapTripToDto.MapToDto(result.Value));
         }
 
-        public async Task<Result<TripDto>> GetByIdAsync(Guid id, Guid userId)
+        public async Task<Result<TripDto>> GetByIdAsync(Guid id, Guid userId, bool isAdmin = false)
         {
             var trip = await _tripRepository.GetByIdAsync(id);
             if (trip is null)
                 return Result<TripDto>.Failure("Trip not found.", ErrorType.NotFound);
 
-            if (trip.UserId != userId)
+            if (!isAdmin && trip.UserId != userId)
                 return Result<TripDto>.Failure("Unauthorized.", ErrorType.Unauthorized);
 
             return Result<TripDto>.Success(MapTripToDto.MapToDto(trip));
         }
 
-        public async Task<Result<TripDetailsDto>> GetWithDetailsAsync(Guid id, Guid userId)
+        public async Task<Result<TripDetailsDto>> GetWithDetailsAsync(Guid id, Guid userId, bool isAdmin = false)
         {
             var trip = await _tripRepository.GetByIdWithDetailsAsync(id);
             if (trip is null)
                 return Result<TripDetailsDto>.Failure("Trip not found.", ErrorType.NotFound);
 
-            if (trip.UserId != userId)
+            if (!isAdmin && trip.UserId != userId)
                 return Result<TripDetailsDto>.Failure("Unauthorized.", ErrorType.Unauthorized);
 
             var totalExpenses = trip.Expenses?.Sum(e => e.Amount) ?? 0;
@@ -101,16 +104,34 @@ namespace TripService.Services
             return Result<TripDto>.Success(MapTripToDto.MapToDto(trip));
         }
 
-        public async Task<Result> DeleteAsync(Guid id, Guid userId)
+        public async Task<Result> DeleteAsync(Guid id, Guid userId, bool isAdmin = false)
         {
             var trip = await _tripRepository.GetByIdAsync(id);
             if (trip is null)
                 return Result.Failure("Trip not found.", ErrorType.NotFound);
 
-            if (trip.UserId != userId)
+            if (!isAdmin && trip.UserId != userId)
                 return Result.Failure("Unauthorized.", ErrorType.Unauthorized);
 
+            var checklistProxy = ServiceProxy.Create<IChecklistService>(new Uri("fabric:/WebProjekat/CheckListService"), new ServicePartitionKey(0));
+
+            var checklistResult = await checklistProxy.DeleteChecklistAsync(id, trip.UserId);
+
+            if(checklistResult.IsFailure)
+                return Result.Failure("Failed to delete associated checklist.", ErrorType.Unexpected);
+
             await _tripRepository.DeleteAsync(id);
+            return Result.Success();
+        }
+        public async Task<Result> DeleteAllByUser(Guid userId, bool isAdmin = false)
+        {
+            var trips = await this.GetAllByUserAsync(userId);
+
+            foreach(var trip in trips.Value)
+            {
+                await this.DeleteAsync(trip.Id, userId, isAdmin);
+            }
+
             return Result.Success();
         }
 
@@ -123,5 +144,7 @@ namespace TripService.Services
 
             return Result<IEnumerable<TripDto>>.Success(trips.Select(MapTripToDto.MapToDto));
         }
+
+
     }
 }

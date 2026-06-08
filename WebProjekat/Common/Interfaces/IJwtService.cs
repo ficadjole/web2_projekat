@@ -4,7 +4,7 @@ namespace Common.Interfaces
 {
     public interface IJwtService
     {
-        Result<string> GenerateToken(Guid userId, string email, string role);
+        Result<string> GenerateToken(Guid userId, string email, string role,string name);
 
     }
 }

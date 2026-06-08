@@ -1,13 +1,5 @@
+import type { ConfirmDeleteModalProps } from "../../props/modalProps/ConfirmDeleteModalProps";
 import { Modal } from "./Modal";
-
-interface ConfirmDeleteModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  message: string;
-  isLoading?: boolean;
-}
 
 export function ConfirmDeleteModal({
   isOpen,

@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\TripService.Interfaces\TripService.Interfaces.csproj" />
     <ProjectReference Include="..\UserService.Interfaces\UserService.Interfaces.csproj" />
   </ItemGroup>
 

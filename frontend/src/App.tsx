@@ -6,6 +6,7 @@ import { AdminDashboardPage } from "./pages/admin/AdminDashboard";
 import { HomePage } from "./pages/HomePage";
 import { TripDetailsPage } from "./pages/trip/TripDetailsPage";
 import { SharedTripPage } from "./pages/trip/SharedTripPage";
+import { ProfilePage } from "./pages/user/ProfilePage";
 
 export default function App() {
   return (
@@ -37,7 +38,14 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<Navigate to="/login" replace />} />
       <Route path="/shared/:token" element={<SharedTripPage />} />
     </Routes>

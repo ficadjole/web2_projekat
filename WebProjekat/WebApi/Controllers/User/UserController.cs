@@ -18,7 +18,7 @@ namespace WebApi.Controllers.User
         public async Task<IActionResult> GetAllUsers()
         {
 
-            var usersResult = userServiceProxy.GetUserProxy().GetUsersAsync().GetAwaiter().GetResult();
+            var usersResult = await userServiceProxy.GetUserProxy().GetUsersAsync();
 
             if (!usersResult.IsSuccess)
             {
@@ -27,6 +27,18 @@ namespace WebApi.Controllers.User
 
             return Ok(usersResult.Value);
 
+        }
+
+        [HttpGet("{id:Guid}")]
+        [Authorize]
+        public async Task<IActionResult> GetUserById(Guid id)
+        {
+            var userResult = await userServiceProxy.GetUserProxy().GetByIdAsync(id);
+            if (!userResult.IsSuccess)
+            {
+                return BadRequest(new { Message = "Get user by id failed", Errors = userResult.Error!.Message });
+            }
+            return Ok(userResult.Value);
         }
 
         [HttpDelete("{id:Guid}")]
@@ -40,7 +52,7 @@ namespace WebApi.Controllers.User
             }
 
 
-            var deleteResult = userServiceProxy.GetUserProxy().DeleteUserAsync(id).GetAwaiter().GetResult();
+            var deleteResult = await userServiceProxy.GetUserProxy().DeleteUserAsync(id);
 
             if (deleteResult.IsFailure)
             {
