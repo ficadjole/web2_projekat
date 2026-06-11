@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using MailingService.Interface.Events;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -10,7 +9,7 @@ namespace WebApi.Controllers.TripShare
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TripShareController(IValidator<CreateTripShareRequest> createValidator, TripServiceProxy proxy, MailingServiceProxy mailingProxy) : ControllerBase
+    public class TripShareController(IValidator<CreateTripShareRequest> createValidator, TripServiceProxy proxy/*, MailingServiceProxy mailingProxy*/) : ControllerBase
     {
 
         [HttpGet("{token}")]
@@ -62,14 +61,6 @@ namespace WebApi.Controllers.TripShare
 
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);
-
-            EmailEvent emailEvent = new EmailEvent
-            {
-                Email = request.Email,
-                TripShareDto = result.Value
-            };
-
-            await mailingProxy.GetMailingProxy().PublishEvent(emailEvent);
 
             return Ok(result.Value);
         }

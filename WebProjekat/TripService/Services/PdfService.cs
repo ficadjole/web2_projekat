@@ -4,15 +4,9 @@ using Microsoft.ServiceFabric.Services.Client;
 using Microsoft.ServiceFabric.Services.Remoting.Client;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TripService.Documents;
 using TripService.Documents.Model;
 using TripService.Interfaces;
-using TripService.Repositories;
 using WebProjekat.Common;
 
 namespace TripService.Services
@@ -32,7 +26,7 @@ namespace TripService.Services
 
             var proxy = ServiceProxy.Create<IChecklistService>(new Uri("fabric:/WebProjekat/CheckListService"), new ServicePartitionKey(0));
 
-            var checklist = await proxy.GetByTripIdAsync(tripId,userId);
+            var checklist = await proxy.GetByTripIdAsync(tripId, userId);
 
             if (checklist is null)
                 return Result<byte[]>.Failure("Checklist not found.", ErrorType.NotFound);

@@ -29,7 +29,7 @@ namespace TripService.Repositories
                                                                             .Where(t => t.UserId == userId)
                                                                             .ToListAsync();
 
-        public async Task<IEnumerable<Trip>> GetAllAsync()=> await _context.Trips.ToListAsync();
+        public async Task<IEnumerable<Trip>> GetAllAsync() => await _context.Trips.ToListAsync();
 
         public async Task AddAsync(Trip trip)
         {

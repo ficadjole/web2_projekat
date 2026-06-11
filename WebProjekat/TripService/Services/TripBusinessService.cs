@@ -22,7 +22,7 @@ namespace TripService.Services
         public async Task<Result<TripDto>> CreateAsync(CreateTripDto dto, Guid userId)
         {
             var result = Trip.Create(dto.Name, dto.Description, dto.StartDate,
-                                     dto.EndDate, dto.PlannedBudget, userId,dto.Notes);
+                                     dto.EndDate, dto.PlannedBudget, userId, dto.Notes);
             if (result.IsFailure)
                 return Result<TripDto>.Failure(result.Error!.Message, result.Error.Type);
 
@@ -63,7 +63,7 @@ namespace TripService.Services
                 EndDate = trip.EndDate,
                 PlannedBudget = trip.PlannedBudget,
                 UserId = trip.UserId,
-                TotalExpenses = totalExpenses+activitiesTotal,
+                TotalExpenses = totalExpenses + activitiesTotal,
                 RemainingBudget = trip.PlannedBudget - totalExpenses - activitiesTotal,
                 Destinations = trip.Destinations?.Select(MapDestinationToDto.MapToDto) ?? [],
                 Expenses = trip.Expenses?.Select(MapExpenseToDto.MapToDto) ?? []
@@ -117,7 +117,7 @@ namespace TripService.Services
 
             var checklistResult = await checklistProxy.DeleteChecklistAsync(id, trip.UserId);
 
-            if(checklistResult.IsFailure)
+            if (checklistResult.IsFailure)
                 return Result.Failure("Failed to delete associated checklist.", ErrorType.Unexpected);
 
             await _tripRepository.DeleteAsync(id);
@@ -127,7 +127,7 @@ namespace TripService.Services
         {
             var trips = await this.GetAllByUserAsync(userId);
 
-            foreach(var trip in trips.Value)
+            foreach (var trip in trips.Value)
             {
                 await this.DeleteAsync(trip.Id, userId, isAdmin);
             }
@@ -139,7 +139,7 @@ namespace TripService.Services
         {
             var trips = await _tripRepository.GetAllAsync();
 
-            if(trips is null)
+            if (trips is null)
                 return Result<IEnumerable<TripDto>>.Failure("No trips found.", ErrorType.NotFound);
 
             return Result<IEnumerable<TripDto>>.Success(trips.Select(MapTripToDto.MapToDto));

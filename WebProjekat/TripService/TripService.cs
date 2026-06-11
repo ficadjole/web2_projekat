@@ -117,7 +117,7 @@ namespace TripService
             => _tripService.UpdateAsync(id, dto, userId);
 
         public Task<Result> DeleteTripAsync(Guid id, Guid userId, bool isAdmin)
-            => _tripService.DeleteAsync(id, userId,isAdmin);
+            => _tripService.DeleteAsync(id, userId, isAdmin);
 
         public Task<Result<IEnumerable<TripDto>>> GetAllAsync() => _tripService.GetAllAsync();
 

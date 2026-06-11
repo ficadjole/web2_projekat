@@ -18,7 +18,7 @@ namespace Common.Services
             _options = options.Value;
         }
 
-        public Result<string> GenerateToken(Guid userId, string email, string role,string name)
+        public Result<string> GenerateToken(Guid userId, string email, string role, string name)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
 

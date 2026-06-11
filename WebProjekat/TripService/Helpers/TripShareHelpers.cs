@@ -1,5 +1,4 @@
-﻿using QRCoder;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace TripService.Helpers
 {

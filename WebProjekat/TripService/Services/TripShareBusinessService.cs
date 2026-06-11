@@ -1,6 +1,10 @@
 ﻿
 
 using Common.Enums;
+using MailingService.Interface;
+using MailingService.Interface.Events;
+using Microsoft.ServiceFabric.Services.Client;
+using Microsoft.ServiceFabric.Services.Remoting.Client;
 using System.Fabric;
 using TripService.Helpers;
 using TripService.Interfaces;
@@ -62,6 +66,16 @@ namespace TripService.Services
                 ExpiresAt = tripShare.Value.ExpiresAt,
                 ShareUrl = shareUrl
             };
+
+            EmailEvent emailEvent = new EmailEvent()
+            {
+                Email = dto.Email,
+                TripShareDto = tripShareDto
+            };
+
+            var mailingProxy = ServiceProxy.Create<IMailingService>(new Uri("fabric:/WebProjekat/MailingService"), new ServicePartitionKey(0));
+
+            await mailingProxy.PublishEvent(emailEvent);
 
             return Result<TripShareDto>.Success(tripShareDto);
 

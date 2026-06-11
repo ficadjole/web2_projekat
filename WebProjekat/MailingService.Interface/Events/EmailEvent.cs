@@ -9,6 +9,6 @@ namespace MailingService.Interface.Events
         [DataMember]
         public string Email { get; set; } = string.Empty;
         [DataMember]
-        public TripShareDto TripShareDto {get; set; }
+        public TripShareDto TripShareDto { get; set; }
     }
 }

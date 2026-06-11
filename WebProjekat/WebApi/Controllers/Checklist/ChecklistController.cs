@@ -1,7 +1,6 @@
 ﻿using CheckListService.Interfaces.DTOs;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebApi.DTOs.Checklist;
@@ -52,10 +51,10 @@ namespace WebApi.Controllers.Checklist
 
         [HttpPatch("trip/{tripId}/items/{itemId}/toggle")]
         [Authorize]
-        public async Task<IActionResult> ToggleItem(Guid tripId,Guid itemId)
+        public async Task<IActionResult> ToggleItem(Guid tripId, Guid itemId)
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            var result = await proxy.GetChecklistProxy().ToggleItemAsync(tripId,itemId, userId);
+            var result = await proxy.GetChecklistProxy().ToggleItemAsync(tripId, itemId, userId);
             if (result.IsFailure)
                 return BadRequest(result.Error!.Message);
             return Ok(result.Value);

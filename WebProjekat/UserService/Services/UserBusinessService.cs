@@ -5,7 +5,6 @@ using UserService.DTOs;
 using UserService.Interfaces;
 using UserService.Interfaces.DTOs;
 using UserService.Mappers;
-using UserService.Repositories;
 using WebProjekat.Common;
 
 namespace UserService.Services
@@ -27,7 +26,7 @@ namespace UserService.Services
 
                 var proxyTrip = ServiceProxy.Create<ITripService>(new Uri("fabric:/WebProjekat/TripService"));
 
-                var deleteTripsResult = await proxyTrip.DeleteAllByUser(userId,true);
+                var deleteTripsResult = await proxyTrip.DeleteAllByUser(userId, true);
 
                 if (deleteTripsResult.IsFailure)
                     return Result<string>.Failure("Failed to delete user's trips. User deletion aborted.", ErrorType.Unexpected);
