@@ -111,6 +111,12 @@ Odgovoran za slanje email obaveštenja korisnicima.
 - **Microsoft SQL Server** — UsersDB, TripsDB, CheckListsDB
 ---
 
+## Use case
+
+[View use case diagram](docs/UseCase.png)
+
+---
+
 ## Kreiranje baze podataka
 
 Da biste pokrenuli odgovarajući MSSQL server, potrebno je da odete u `database` folder, otvorite terminal (CMD/PowerShell) i unesete sledeću komandu:
