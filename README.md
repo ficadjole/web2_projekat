@@ -195,6 +195,24 @@ npm run dev
 ```
 
 Da biste mogli koristiti funkcionalnost deljenja planova potrebno je da imate instaliran **ngrok**.
-Ngrok je revers proxy koji služi da kreira siguran tunel, omogućavajući da se zahtevi poslati na njegovu javnu adresu proslede direktno na moj localhost.
+> **Hint:** Ngrok je revers proxy koji služi da kreira siguran tunel, omogućavajući da se zahtevi poslati na njegovu javnu adresu proslede direktno na moj localhost.
 
+Kada pokrenete **ngrok** potrebno je da unesete odgovarajuci **auth_token** koji je povezan sa nalogom da biste uvek imali isti javni url.
+
+```powershell
+ngrok config add-authtoken $YOUR_AUTHTOKEN
+```
+
+Nakon toga unosite komandu za dobijanje public url-a:
+
+```powershell
+ngrok http --url=take-submarine-collapse.ngrok-free.dev 5137
+```
+
+Komanda se sastoji od:
+- vrste protokola: http / https
+- url
+- localhost port frontenda
+
+Nakon podesavanja **ngroka** moguce je koristiti funkcionalnost deljenja planova.
 ---
